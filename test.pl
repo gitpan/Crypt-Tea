@@ -1,29 +1,32 @@
-#! /usr/bin/perl
+#!/usr/bin/perl -w
 #########################################################################
-#        This Perl script is Copyright (c) 2001, Peter J Billam         #
+#        This Perl script is Copyright (c) 2002, Peter J Billam         #
 #               c/o P J B Computing, www.pjb.com.au                     #
 #                                                                       #
-#     This program is free software; you can redistribute it and/or     #
+#     This script is free software; you can redistribute it and/or      #
 #            modify it under the same terms as Perl itself.             #
 #########################################################################
+
+use Test::Simple tests => 7;
 use Crypt::Tea;
+# $Crypt::Tea::PP = 1;
 
 my $text = <<'EOT';
-Hier lieg' ich auf dem Frülingshügel:
-die Wolke wird mein Flügel,
+Hier lieg' ich auf dem FrÃ¼lingshÃ¼gel:
+die Wolke wird mein FlÃ¼gel,
 ein Vogel fliegt mir voraus.
 
 Ach, sag' mir, all-einzige Liebe,
-wo du bleibst, daß ich bei dir bliebe !
-doch du und die Lüfte, ihr habt kein Haus.
+wo du bleibst, daÃŸ ich bei dir bliebe !
+doch du und die LÃ¼fte, ihr habt kein Haus.
 
-Der Sonnenblume gleich steht mein Gemüthe offen,
+Der Sonnenblume gleich steht mein GemÃ¼the offen,
 sehnend, sich dehnend in Lieben und Hoffen.
-Frühling, was bist du gewillt ?
+FrÃ¼hling, was bist du gewillt ?
 wenn werd' ich gestillt ?
 
-Die Wolke seh' ich wandeln und den Fluß,
-es dringt der Sonne goldner Kuß tief bis in's Geblüt hinein;
+Die Wolke seh' ich wandeln und den FluÃŸ,
+es dringt der Sonne goldner KuÃŸ tief bis in's GeblÃ¼t hinein;
 die Augen, wunderbar berauschet, thun, als scliefen sie ein,
 nur noch das Ohr der Ton der Biene lauschet.
 
@@ -31,12 +34,54 @@ Ich denke Diess und denke Das,
 ich sehne mich, und weiss nicht recht, nach was:
 halb ist es Lust, halb ist es Klage;
 mein Herz, o sage,
-was webst du für Erinnerung
-in goldnen grüner Zweige Dämmerung ?
+was webst du fÃ¼r Erinnerung
+in goldnen grÃ¼ner Zweige DÃ¤mmerung ?
 
 Alte, unnennbare Tage !
 EOT
 
+ok (&Crypt::Tea::binary2ascii(1234567,7654321,9182736,8273645)
+ eq "ABLWhwB0y7EAjB4QAH4-7Q", "binary2ascii");
+
+my @ary = &Crypt::Tea::ascii2binary("GUQEX19vG3csxE9v2Vtwh");
+ok (&equal(\@ary,
+ [423887967, 1601117047, 751062895, 3646648452]), "ascii2binary");
+
+@ary = &Crypt::Tea::tea_code((2048299521,595110280),
+  (-764348263,554905533,637549562,-283747546));
+ok (&equal(\@ary, [-451692928, 1589210186]), "tea_code");
+
+@ary = &Crypt::Tea::tea_decode((2048299521,595110280),
+  (-764348263,554905533,637549562,-283747546));
+ok (&equal(\@ary, [-257148566, -1681954940]), "tea_decode");
+
+ok (&asciidigest('Gloop gleep glorp glurp') eq "j4u8AWK2n6A4abYVtUAihw",
+"asciidigest");
+
+$key1 = &asciidigest ("G $$ ". time);
+my $c = &encrypt ($text, $key1);
+my $p = &decrypt ($c, $key1);
+ok (($p eq $text), "encrypt and decrypt");
+
+$c =~ tr/-/+/;
+$p = &decrypt ($c, $key1);
+ok (($p eq $text), "version-1-compatible decrypt");
+
+&generate_test_html();
+
+exit;
+# --------------------------- infrastructure ----------------
+sub equal { my ($xref, $yref) = @_;
+	my $eps = .000000001;
+	my @x = @$xref; my @y = @$yref;
+	if (scalar @x != scalar @y) { return 0; }
+	my $i; for ($i=$[; $i<=$#x; $i++) {
+		if (abs($x[$i]-$y[$i]) > $eps) { return 0; }
+	}
+	return 1;
+}
+
+sub generate_test_html {
 $key1 = &asciidigest ("G $$ ". time);
 $key2 = &asciidigest ("Arghhh... " . time ."Xgloopiegleep $$");
 
@@ -52,32 +97,8 @@ And if you are reading this one, it has been successfully
 encrypted by <I>Perl</I>, decrypted by <I>JavaScript</I>,
 and then, using a different password "$key2",
 re-encrypted and re-decrypted by <I>JavaScript</I>.
+This means that <B>everyting&nbsp;works</B>&nbsp;:-)
 EOT
-
-my $d = &asciidigest ($text); 
-if ($d eq '5sO762E_kw3WK--EiHhHiA') {
-	print "asciidigest OK ...\n";
-} else {
-	print "ERROR: asciidigest was $d, should be 5sO762E_kw3WK--EiHhHiA\n";
-	exit 1;
-}
-
-my $c = &encrypt ($text, $key1); 
-my $p = &decrypt ($c, $key1);
-if ($p eq $text) {
-	print "encrypt and decrypt OK ...\n";
-} else {
-	print "ERROR: encrypt and decrypt failed: encrypt was\n$c\n";
-	exit 1;
-}
-$c =~ tr/-/+/;
-$p = &decrypt ($c, $key1);
-if ($p eq $text) {
-	print "version1-compatible decrypt OK ...\n";
-} else {
-	print "ERROR: version1-compatible decrypt failed: encrypt was\n$c\n";
-	exit 1;
-}
 
 if (! open (F, '>test.html')) { die "Sorry, can't open test.html: $!\n"; }
 $ENV{REMOTE_ADDR} = '123.321.123.321';  # simulate CGI context
@@ -336,9 +357,8 @@ document.write(decrypt(c2,'$key2'));
 EOT
 close F;
 
-warn "Now use a JavaScript-capable browser to view test.html ...\n";
-
-exit 0;
+print "#      Now use a JavaScript-capable browser to view test.html ...\n";
+}
 
 __END__
 
@@ -366,4 +386,3 @@ Peter J Billam  http://www.pjb.com.au/comp/contact.html
 http://www.pjb.com.au/ http://www.cpan.org perl(1).
 
 =cut
-

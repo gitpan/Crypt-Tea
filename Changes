@@ -23,3 +23,5 @@
 20041218 2.05 documentation of the JS end of FORM submission
 20041221 2.06 more doc adjustments, added examples/tea_demo.cgi
 20041223 2.07 eliminate octals from JS strings, for ECMAscript-3
+20050105 EXPORT_OK and ALL introduced for str2ascii and ascii2str
+20050113 2.08 test.pl uses Test::Simple

@@ -78,10 +78,10 @@ both Perl and JavaScript.
 The various options offer encryption, decryption and digest, and all
 cyphertext is ascii-encoded to prevent munging. Another option returns
 JavaScript code which offers identical functions in JS, and this can
-be used by GCIs to feed to the browser.  Triple encryption will be
+be used by CGIs to feed to the browser.  Triple encryption will be
 offered later.
 
-Version 2.06,
+Version 2.08,
 #COMMENT#
 
 =head1 AUTHOR

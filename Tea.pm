@@ -24,12 +24,13 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.07';
+$VERSION = '2.08';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
-@EXPORT=qw(asciidigest encrypt decrypt
- tea_in_javascript str2ascii ascii2str encrypt_and_write);
+@EXPORT=qw(asciidigest encrypt decrypt tea_in_javascript);
+@EXPORT_OK = qw(str2ascii ascii2str encrypt_and_write);
+%EXPORT_TAGS = (ALL => [@EXPORT,@EXPORT_OK]);
 
 # begin config
 my %a2b = (
@@ -151,7 +152,7 @@ sub binarydigest { my $str = $_[$[];  # returns 4 32-bit-int binary signature
 	}
 	return ($c0,$c1,$c2,$c3);
 }
-sub encrypt { my ($str,$key)=@_; # encodes with CBC (Cipher Block Chaining)
+sub encrypt { my ($str,$key)=@_; # encodes with CBC (Cypher Block Chaining)
 	use integer;
 	return '' unless $str; return '' unless $key;
 	@key = &binarydigest($key);
@@ -414,7 +415,7 @@ function binarydigest (str, keystr) {  // returns 22-char ascii signature
  concat[0]=c0[0]; concat[1]=c0[1]; concat[2]=c1[0]; concat[3]=c1[1];
  return concat;
 }
-function encrypt (str,keystr) {  // encodes with CBC (Cipher Block Chaining)
+function encrypt (str,keystr) {  // encodes with CBC (Cypher Block Chaining)
  if (! keystr) { alert("encrypt: no key"); return false; }
  var key = new Array();  key = binarydigest(keystr);
  if (! str) return "";
@@ -609,10 +610,10 @@ In CGI scripts:
 This module implements TEA, the Tiny Encryption Algorithm,
 and some Modes of Use, in Perl and JavaScript.
 
-The $key is a sufficiently longish string; at least 17 random 8-bit
-bytes for single encryption.
+The $key is a sufficiently longish string;
+at least 17 random 8-bit bytes for single encryption.
 
-Version 2.07,
+Version 2.08,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -623,21 +624,11 @@ Version 2.07,
 
 =item I<encrypt>( $plaintext, $key );
 
-Encrypts with CBC (Cipher Block Chaining)
+Encrypts with CBC (Cypher Block Chaining)
 
 =item I<decrypt>( $cyphertext, $key );
 
-Decrypts with CBC (Cipher Block Chaining)
-
-=item I<binary2ascii>( $a_binary_string );
-
-Provides an ascii text encoding of the binary argument.
-If Tea.pm is not being invoked from a GCI script,
-the ascii is split into lines of 72 characters.
-
-=item I<ascii2binary>( $an_ascii_string );
-
-Provides the binary original of an ascii text encoding.
+Decrypts with CBC (Cypher Block Chaining)
 
 =item I<asciidigest>( $a_string );
 
@@ -647,6 +638,24 @@ Returns an asciified binary signature of the argument.
 
 Returns a compatible implementation of TEA in JavaScript,
 for use in CGI scripts to communicate with browsers.
+
+=head1 EXPORT_OK SUBROUTINES
+
+The following routines are not exported by default, but are
+exported under the I<ALL> tag, so if you need them you should:
+
+ import Crypt::Tea qw(:ALL);
+
+=item I<binary2ascii>( $a_binary_string );
+
+Provides an ascii text encoding of the binary argument.
+If Tea.pm is not being invoked from a CGI script
+(as judged by the existence of $ENV{REMOTE_ADDR}),
+the ascii is split into lines of 72 characters.
+
+=item I<ascii2binary>( $an_ascii_string );
+
+Provides the binary original of an ascii text encoding.
 
 =back
 
@@ -748,6 +757,27 @@ they can then use I<parent.key> to encrypt and decrypt.
 This can become intractable.
 See CGI::Htauth.pm for attempts to use this kind of technique.
 
+=head1 BROWSERS
+
+Crypt::Tea works fine with most browsers.
+You can check out yours by viewing the test page
+test.html which is generated in the install directory
+when you run I<perl test.pl> or I<make test>.
+If you can read the paragraphs at the end, then everything works.
+
+There is believed to be a problem with MacOS 10.2 Safari and IE browsers,
+in which binary operations like xor and shift mess up the
+leftmost bit of the word.  The work-around would probably be
+to re-implement these machine instructions in JavaScript :-(
+
+There is believed to be some problem in the core functions tea_code
+and tea_decode on the version of Konqueror reporting itself as
+I<Konqueror 5.0 (compatible; Konqueror/3.1; Linux)>
+although the very similar
+I<Konqueror 5.0 (compatible; Konqueror/3.2; Linux)>
+works fine.
+
+
 =head1 ROADMAP
 
 Versions 2.xx can decrypt files encrypted by 1.xx,
@@ -765,14 +795,13 @@ ascii-encoded, and notably there is a subroutine to return JavaScript
 code which implements compatible functions. Unfortunately, Microsoft
 operating systems confuse the two names and are unable to install both.
 Therefore, after version 2.xx, further development in Crypt::Tea
-will take place probably under the name Crypt::Tea_PPJS.
+will take place probably under the name Crypt::Tea_JS.
 
 Currently this is vapourware, but candidate additions after the move to
-Crypt::Tea_PPJS could include Diffie-Hellman negotiation, triple-encryption,
+Crypt::Tea_JS could include Diffie-Hellman negotiation, triple-encryption,
 the use of the newer Tea algorithm
 (which would sacrifice backward-compatibility),
-and some use of C for extra speed
-(which would not fit the PP bit of the new name).
+and more use of C for extra speed
 
 
 =head1 AUTHOR
@@ -787,7 +816,8 @@ and on some help from I<Applied Cryptography> by Bruce Schneier
 as regards the modes of use.
 Thanks also to Neil Watkiss for the MakeMaker packaging, and to
 Scott Harrison for suggesting workarounds for MacOS 10.2 browsers,
-and to Morgan Burke for pointing out the problem with URL query strings.
+to Morgan Burke for pointing out the problem with URL query strings,
+and to Rolf Wagner for testing.
 
 =head1 SEE ALSO
 
