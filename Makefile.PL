@@ -15,7 +15,7 @@ Use the arrow keys (or h,j,k,l) and <Return> to make your choices.
 
 EOT
 
-my $version = '1.33';
+my $version = '1.34';
 my $bindir  = &bindir;
 my $libdir  = &libdir . '/Crypt';
 my $mandir  = &mandir;
@@ -78,6 +78,8 @@ if ($mandir) { print F <<'EOT'; }
 ${MANDIR}/man3/Crypt_Tea.3 : Tea.pm
 	pod2man Tea.pm > $@
 	chmod 644 $@
+	cp $@ ${MANDIR}/man3/Crypt::Tea.3
+	chmod 644 ${MANDIR}/man3/Crypt::Tea.3
 
 EOT
 
@@ -237,11 +239,11 @@ sub check_kit {
 	print STDERR "Checking your kit ... ";
 
 	my %file_sizes = (
-		'MANIFEST', 72,
-		'Makefile.PL', 7465,
-		'Tea.raw', 28118,
+		'MANIFEST', 80,
+		'Makefile.PL', 7539,
+		'Tea.raw', 25641,
 		'tea.raw', 2997,
-		'Clui.pm', 25574,
+		'Clui.pm', 29518,
 		'test_script', 3417,
 	);
 

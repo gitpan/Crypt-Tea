@@ -6,14 +6,15 @@
 #     This module is free software; you can redistribute it and/or      #
 #            modify it under the same terms as Perl itself.             #
 #########################################################################
-# to be done - &ask should accept a default as an optional 2nd arg
 
 package Term::Clui;
-$VERSION = '1.10';
+$VERSION = '1.13';
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw(ask_password ask confirm choose edit view);
-@EXPORT_OK = qw(beep tiview);
+@EXPORT = qw(ask_password ask confirm choose edit sorry view);
+@EXPORT_OK = qw(beep tiview back_up);
+
+no strict; local $^W = 0;
 
 # ------------------------ vt100 stuff -------------------------
 
@@ -32,8 +33,13 @@ $KEY_BTAB  = oct(541);
 
 $bsd = (-f "/kernel" || -f "/vmunix" || -f "/386bsd");
 
-sub addch  { print TTY @_; }
-sub addstr { print TTY @_; }
+my $irow; my $icol;   # maintained by &puts, &up, &down, &left and &right
+sub puts   { my $s = join '', @_;
+	$irow += ($s =~ tr/\n/\n/);
+	if ($s =~ /\r$/) { $icol = 0; }   # should increment otherwise ...
+	print TTY $s;
+}
+# could terminfo sgr0, bold, rev, cub1, cuu1, cuf1, cud1 ...
 sub attrset { my $attr = $_[$[];
 	if (! $attr) {
 		print TTY "\033[0m";
@@ -46,16 +52,6 @@ sub attrset { my $attr = $_[$[];
 sub beep     { print TTY "\07"; }
 sub clear    { print TTY "\033[H\033[J"; }
 sub clrtoeol { print TTY "\033[K"; }
-sub endwin {
-	print TTY "\033[0m";
-	require 'flush.pl'; &flush (TTY);
-	close TTY; close TTYIN;
-	if ($^O eq 'FreeBSD') {
-		system("stty $stty </dev/tty") if $stty;
-	} else {
-		system("stty $stty </dev/tty >/dev/tty") if $stty;
-	}
-}
 sub getch {
 	local ($c);
 	$c = getc(TTYIN);
@@ -101,39 +97,73 @@ sub getch {
 		return($c);
 	}
 }
-sub puts  { print TTY @_; }
-sub up    { my $i; for ($i=0; $i<$_[$[]; $i++) { print TTY "\033[A"; } }
-sub down  { my $i; for ($i=0; $i<$_[$[]; $i++) { print TTY "\033[B"; } }
-sub right { my $i; for ($i=0; $i<$_[$[]; $i++) { print TTY "\033[C"; } }
-sub left  { my $i; for ($i=0; $i<$_[$[]; $i++) { print TTY "\033[D"; } }
+sub up    {
+	if ($_[$[] < 0) { &down($_[$[]); return; }
+	print TTY "\033[A" x $_[$[]; $irow -= $_[$[];
+}
+sub down  {
+	if ($_[$[] < 0) { &up($_[$[]); return; }
+	print TTY "\n" x $_[$[]; $irow += $_[$[];
+}
+sub right {
+	if ($_[$[] < 0) { &up($_[$[]); return; }
+	print TTY "\033[C" x $_[$[]; $icol += $_[$[];
+}
+sub left  {
+	if ($_[$[] < 0) { &up($_[$[]); return; }
+	print TTY "\033[D" x $_[$[]; $icol -= $_[$[];
+}
+sub goto { my $newcol = shift; my $newrow = shift;
+	if ($newcol == 0) { print TTY "\r" ; $icol = 0;
+	} elsif ($newcol > $icol) { &right($newcol-$icol);
+	} elsif ($newcol < $icol) { &left ($icol-$newcol);
+	}
+	if ($newrow > $irow)      { &down ($newrow-$irow);
+	} elsif ($newrow < $irow) { &up   ($irow-$newrow);
+	}
+}
+sub move { local ($ix,$iy) = @_; printf TTY "\033[%d;%dH",$iy+1,$ix+1; }
+sub beep { print TTY "\07"; }
+my $initscr_already_run = 0; my $stty = '';
 sub initscr {
+	if ($initscr_already_run) {
+		$icol = 0; $irow = 0; $initscr_already_run++; return;
+	}
 	open(TTY, ">/dev/tty")  || (warn "Can't write /dev/tty: $!\n", return 0);
 	$stty = `stty -g`; chop $stty;
 	open(TTYIN, "</dev/tty") || (warn "Can't read /dev/tty: $!\n", return 0);
 
-	if ($^O eq 'FreeBSD') {
-		system("stty -echo -icrnl raw </dev/tty");
-	} else {
-		system("stty -echo -icrnl raw </dev/tty >/dev/tty");
+	if ($^O eq 'FreeBSD') { system("stty -echo -icrnl raw </dev/tty");
+	} else { system("stty -echo -icrnl raw </dev/tty >/dev/tty");
 	}
 	# system("stty -echo -icrnl raw </dev/tty");  # various old tries ...
 	# system("stty -echo -icrnl raw");
 	# if ($bsd) { system "stty cbreak </dev/tty >/dev/tty 2>&1";
 	# } else { system "stty", '-icanon'; system "stty", 'eol', "\001";
 	# }
-	require 'flush.pl'; &flush (TTY);
-	select((select(TTY), $| = 1)[$[]);
+
+	select((select(TTY), $| = 1)[$[]); print TTY "";
+	$icol = 0; $irow = 0; $initscr_already_run = 1;
 }
-sub move { local ($ix,$iy) = @_; printf TTY "\033[%d;%dH",$iy+1,$ix+1; }
-sub beep { print TTY "\07"; }
+sub endwin {
+	print TTY "\033[0m";
+	if ($initscr_already_run > 1) { $initscr_already_run--; return; }
+	close TTY; close TTYIN;
+	if ($^O eq 'FreeBSD') { system("stty $stty </dev/tty") if $stty;
+	} else { system("stty $stty </dev/tty >/dev/tty") if $stty;
+	}
+	$initscr_already_run = 0;
+}
 
 # ----------------------- size handling ----------------------
+
+my ($must_use_tput, $maxcols, $maxrows); my $size_changed = 1;
 
 eval 'require "Term/Size.pm"';
 if ($@) { $must_use_tput = 1; }
 
-sub cols_and_rows {
-	my ($maxcols, $maxrows);
+sub check_size {
+	if (! $size_changed) { return; }
 	if ($must_use_tput) {
 		$maxcols = `tput cols`;
 		if ($^O eq 'linux') { $maxrows = (`tput lines` + 0);
@@ -144,106 +174,129 @@ sub cols_and_rows {
 	}
 	$maxcols = $maxcols || 80; $maxcols--;
 	$maxrows = $maxrows || 24;
-	return ($maxcols, $maxrows);
+	$size_changed = 0;
 }
 $SIG{'WINCH'} = sub { $size_changed = 1; };
 
 # ------------------------ ask stuff -------------------------
 
-sub ask_password { local ($question) = @_;  # no echo - use for passwords
-	local ($silent) = 'yes';	&ask ($question);
+sub ask_password { # no echo - use for passwords
+	local ($silent) = 'yes'; &ask ($_[$[]);
 }
-sub ask { local ($question) = $_[$[];	# returns a one-line text-entry answer
+sub ask { local ($question, $default) = @_;
 	return '' unless $question;
 	&initscr(); my $nol = &display_question($question);
 
    my $i = 0; my $n = 0; my @s = (); # cursor position, length, string
+	if ($default) {
+		$default =~ s/\t/	/g;
+		@s = split ('', $default); $n = scalar @s; $i = $[;
+		foreach $j ($[ .. $n) { &puts($s[$j]); }
+		&left($n);
+	}
 
-	for (;;) {
+	while (1) {
 		$c = &getch();
-		if ($c eq "\r") { &erase_next_lines($nol); last; }
+		if ($c eq "\r") { &erase_lines(1); last; }
 		if ($size_changed) {
-			&erase_next_lines($nol); &up(1); $nol = &display_question($question);
+			&erase_lines(0); $nol = &display_question($question);
 		}
-		if ($c == $KEY_LEFT && $i > 0) { $i--; &addch ("\010");
+		if ($c == $KEY_LEFT && $i > 0) { $i--; &left(1);
 		} elsif ($c == $KEY_RIGHT) {
-			if ($i < $n) { &addch ($silent ? "x" : $s[$i]); $i++; }
+			if ($i < $n) { &puts ($silent ? "x" : $s[$i]); $i++; }
 		} elsif (($c eq "\cH") || ($c eq "\c?")) {
 			if ($i > 0) {
-			 	$n--; $i--;
-			 	splice(@s, $i, 1);
-			  	&addch ("\e[D");
-			  	foreach $j ($i .. $n) { print "$s[$j]"; }
-			  	&clrtoeol(); print "\cH" x ($n - $i);
+			 	$n--; $i--; splice(@s, $i, 1); &left(1);
+			  	foreach $j ($i .. $n) { &puts($s[$j]); }
+			  	&clrtoeol(); &left($n-$i);
 			}
+		} elsif ($c eq "\cC" || $c eq "\cX" || $c eq "\cD") {  # clear ...
+			&left($i); $i = 0; $n = 0; @s = (); &clrtoeol();
+		} elsif ($c eq "\cB") { &left($i); $i = 0;
+		} elsif ($c eq "\cE") { &right($n-$i); $i = $n;
 		} elsif ($c eq "\cL") {  # redraw ...
-		} elsif ($c !~ /[\000-\031]/) {
+		} elsif ($c > 255) { &beep();
+		} elsif ($c =~ /^[\032-\376]$/) {
 			splice(@s, $i, 0, $c);
-			$n++; $i++; &addch($silent ? "x" : $c);
-			foreach $j ($i .. $n) { print "$s[$j]"; }
+			$n++; $i++; &puts($silent ? "x" : $c);
+			foreach $j ($i .. $n) { &puts($s[$j]); }
 			&clrtoeol();  &left($n-$i);
+		} else { &beep();
 		}
 	}
 	&endwin(); $silent = ''; return join("", @s);
 }
 
 # ----------------------- choose stuff -------------------------
+sub debug {
+	if (! open (DEBUG, '>>/tmp/clui.log')) {
+		warn "can't open /tmp/clui.log: $!\n"; return;
+	}
+	print DEBUG "$_[$[]\n"; close DEBUG;
+}
+
+my (%irow, %icol, $nrows, $clue_has_been_given, $choice, $this_cell);
 
 sub choose {  local ($question, @list) = @_;
 	# If called in array context, should probably allow multiple choice,
-   # but this would be incompatible with the Tk widgets that would be
+   # though this would be incompatible with the Tk widgets that would be
    # implementing &choose in a GUI environment ...
 
 	return unless @list;
 	grep (($_ =~ s/\n$//) && 0, @list);	# chop final \n if any
+	my @biglist = @list; my $icell;
 
-	local ($irow, %irow, $icol, %icol, $icell);
-	local ($home) = $ENV{'HOME'} || $ENV{'LOGDIR'} || (getpwuid($<))[7];
+	my $home = $ENV{'HOME'} || $ENV{'LOGDIR'} || (getpwuid($<))[7];
 	mkdir ("$home/db", 0750);
 
 	$question =~ s/^[\n\r]+//;   # strip initial newline(s)
 	$question =~ s/[\n\r]+$//;   # strip final newline(s)
 	my ($firstline,$otherlines) = split ("\n", $question, 2);
 
-	local ($choice);
 	if ($firstline && dbmopen (%CHOICES, "$home/db/choices", 0600)) {
 		$choice = $CHOICES{$firstline}; dbmclose %CHOICES;
 	}
 
-	($maxcols, $maxrows) = &cols_and_rows();
-	&layout();
-	if ($nrows > $maxrows) { # if too many for one screen, use complete.pl
-		# but should ask for clue, grep the list, and offer choice when it fits
-		# and should take account of multiline questions ...
-		# Also: should re-enter this bit each time &layout is re-called ...
-		require 'complete.pl';
-		return &Complete("$firstline (TAB to complete, ^D to list) ", @list);
-	}
+	&initscr (); &puts("$firstline\r\n");  &size_and_layout(0);
+	if ($nrows >= $maxrows) { @list = &narrow_the_search(@list); }
+	&wr_screen();
 
-	&initscr ();
-	if ($firstline) { &puts("$firstline\r\n"); }
-	$icol = 0; $irow = 1;
-	&wr_screen(); &wr_cell($this_cell);
-	for (;;) {
-		last unless $c = &getch();
+	while (1) {
+		$c = &getch();
 		if ($size_changed) {
-			($maxcols, $maxrows) = &cols_and_rows(); $size_changed = 0;
-			&erase_next_lines($nrows);
-			&layout(); &wr_screen(); &wr_cell($this_cell);
+			&size_and_layout($nrows);
+			if ($nrows >= $maxrows) { @list = &narrow_the_search(@list); }
+			&wr_screen();
 		}
 		if ($c eq "q" || $c eq "\cD") {
-			for ($ir=0; $ir<=$nrows; $ir++) { &goto(0,$ir); &clrtoeol (); }
-			&goto (0,0); &endwin (); return wantarray ? () : undef;
+			&erase_lines(1);
+			if ($clue_has_been_given) {
+				my $re_clue = &confirm("Do you want to change your clue ?");
+				&up(1); &clrtoeol();   # erase the confirm
+				if ($re_clue) {
+					$irow = 1;
+					@list = &narrow_the_search(@biglist); &wr_screen(); next;
+				} else {
+					&up(1); &clrtoeol(); &endwin (); $clue_has_been_given = 0;
+         		return wantarray ? () : undef;
+				}
+			}
+			&goto (0,0); &clrtoeol(); &endwin (); $clue_has_been_given = 0;
+			return wantarray ? () : undef;
 		} elsif ((($c eq " ") || ($c eq "\t")) && ($this_cell < $#list)) {
-			$this_cell++; &wr_cell($this_cell-1); &wr_cell($this_cell); 
+			$this_cell++; &wr_cell($this_cell-1);
+			&wr_cell($this_cell); 
 		} elsif ((($c eq "l") || ($c eq $KEY_RIGHT)) && ($this_cell < $#list)
 			&& ($irow[$this_cell] == $irow[$this_cell+1])) {
-			$this_cell++; &wr_cell($this_cell-1); &wr_cell($this_cell); 
+			$this_cell++; &wr_cell($this_cell-1);
+			&wr_cell($this_cell); 
 		} elsif ((($c eq "\cH") || ($c eq $KEY_BTAB)) && ($this_cell > $[)) {
-			$this_cell--; &wr_cell($this_cell+1); &wr_cell($this_cell); 
+			$this_cell--; &wr_cell($this_cell+1);
+			&wr_cell($this_cell); 
 		} elsif ((($c eq "h") || ($c eq $KEY_LEFT)) && ($this_cell > $[)
 			&& ($irow[$this_cell] == $irow[$this_cell-1])) {
-			$this_cell--; &wr_cell($this_cell+1); &wr_cell($this_cell); 
+			$this_cell--; &wr_cell($this_cell+1);
+			&wr_cell($this_cell); 
 		} elsif ((($c eq "j") || ($c eq $KEY_DOWN)) && ($irow < $nrows)) {
 			$mid_col = $icol[$this_cell] + 0.5 * $l[$this_cell];
 			$left_of_target = 1000;
@@ -276,72 +329,139 @@ sub choose {  local ($question, @list) = @_;
 			&wr_cell($iold); &wr_cell($this_cell);
 		} elsif ($c eq "\cL") {
 			if ($size_changed) {
-				($maxcols, $maxrows) = &cols_and_rows(); $size_changed = 0;
-				for ($ir=1; $ir<=$nrows; $ir++) { &goto(0,$ir); &clrtoeol (); }
-				&goto (0,1); &layout();
+				&size_and_layout($nrows);
+				if ($nrows >= $maxrows) { @list = &narrow_the_search(@list); }
 			}
-			&wr_screen(); &wr_cell($this_cell);
+			&wr_screen();
 		} elsif ($c eq "\r") {
-			for ($ir=1; $ir<=$nrows; $ir++) { &goto(0,$ir); &clrtoeol (); }
-			&goto ((length $firstline)+2,0);
-			&addstr($list[$this_cell] . "\n\r");
-			&clrtoeol (); &endwin ();
+			&erase_lines(1);
+			&goto((length $firstline)+2,0); &puts($list[$this_cell]."\n\r");
+			&endwin();
 			if ($firstline && dbmopen (%CHOICES, "$home/db/choices", 0600)) {
 				$CHOICES{$firstline} = $list[$this_cell];
 				dbmclose %CHOICES;
 			}
+			$clue_has_been_given = 0;
 			return wantarray ? ($list[$this_cell]) : $list[$this_cell];
 		}
 	}
+	warn "choose: shouldn't reach here ...\n";
 	&endwin ();
 }
-sub layout {
-	my $irow = 1; my $icol = 0; # my $this_cell = $[;
-	for ($icell=$[; $icell <= $#list; $icell++) {
-		$l[$icell] = length ($list[$icell]) + 2;
-		if (($icol + $l[$icell]) >= $maxcols ) { $irow++; $icol = 0; }
-		$irow[$icell] = $irow; $icol[$icell] = $icol;
-		$icol += $l[$icell];
-		if ($list[$icell] eq $choice) { $this_cell = $icell; }
+sub layout { my @list = @_;
+	$this_cell = 0; my $irow = 1; my $icol = 0;  my $i;
+	for ($i=$[; $i<=$#list; $i++) {
+		$l[$i] = length ($list[$i]) + 2;
+		if (($icol + $l[$i]) >= $maxcols ) { $irow++; $icol = 0; }
+		if ($irow > $maxrows) { return $irow; }  # save time
+		$irow[$i] = $irow; $icol[$i] = $icol;
+		$icol += $l[$i];
+		if ($list[$i] eq $choice) { $this_cell = $i; }
 	}
-	$nrows = $irow;
+	return $irow;
 }
 sub wr_screen {
-	&addstr ("\r");	$icol = 0;
-	for ($icell= $[; $icell <=$#list; $icell++) { &wr_cell ($icell); }
+	my $i;
+	for ($i=$[; $i<=$#list; $i++) {
+		&wr_cell($i, $this_cell) unless $i==$this_cell;
+	}
+	&wr_cell($this_cell);
 }
-sub wr_cell { local ($icell) = @_;
-	&goto ($icol[$icell], $irow[$icell]);
-	if ($marked[$icell]) { &attrset($A_BOLD); }
-	if ($icell == $this_cell) { &attrset($A_REVERSE); }
-	local ($no_tabs) = $list[$icell];
+sub wr_cell { my $i = shift;
+	&goto ($icol[$i], $irow[$i]);
+	if ($marked[$i]) { &attrset($A_BOLD); }
+	if ($i == $this_cell) { &attrset($A_REVERSE); }
+	my $no_tabs = $list[$i];
 	$no_tabs =~ s/\t/ /;
 	$no_tabs =~ s/^(.{1,77}).*/\1/;
-	&addstr(" $no_tabs ");
-	if ($marked[$icell] || $icell == $this_cell) { &attrset($A_NORMAL); }
+	&puts(" $no_tabs ");
+	if ($marked[$i] || $i == $this_cell) { &attrset($A_NORMAL); }
 	$icol += length ($no_tabs) + 2;
-	# sleep(1);
 }
-sub goto { local ($newcol, $newrow) = @_;
-	if ($newcol > $icol)      { &right($newcol-$icol);
-	} elsif ($newcol < $icol) { &left ($icol-$newcol);
+sub size_and_layout { my $erase_rows = shift;
+	my $oldmaxrows = $maxrows;
+	&check_size;
+	if ($erase_rows) {
+		if ($erase_rows > $maxrows) { $erase_rows = $maxrows; } # XXX?
+		&erase_lines(1);
 	}
-	$icol = $newcol;
-	if ($newrow > $irow)      { &addstr ("\n" x ($newrow-$irow));
-	} elsif ($newrow < $irow) { &up  ($irow-$newrow);
+	$nrows = &layout(@list);
+}
+sub narrow_the_search { my @biglist = @_;
+	# replaces the old ... require 'complete.pl';
+	# return &Complete("$firstline (TAB to complete, ^D to list) ", @list);
+	my $nchoices = scalar @_;
+	my $n; my $i; my @s; my $s; my @list = @biglist;
+	$clue_has_been_given = 1;
+	&ask_for_clue($nchoices, $i, $s);
+	while (1) {
+		$c = &getch();
+		if ($size_changed) {
+			&size_and_layout(0);
+			if ($nrows < $maxrows) { &erase_lines(1); return @list; }
+		}
+		if ($c == $KEY_LEFT && $i > 0) { $i--; &left(1); next;
+		} elsif ($c == $KEY_RIGHT) { if ($i < $n) { &puts($s[$i]); $i++; next; }
+		} elsif (($c eq "\cH") || ($c eq "\c?")) {
+			if ($i > 0) {
+			 	$n--; $i--; splice(@s, $i, 1); &left(1);
+			  	foreach $j ($i..$n) { &puts($s[$j]); } &clrtoeol(); &left($n-$i);
+			}
+		} elsif ($c eq "\cC" || $c eq "\cX" || $c eq "\cD") {  # clear ...
+			&left($i); $i = 0; $n = 0; @s = (); &clrtoeol();
+		} elsif ($c eq "\cB") { &left($i); $i = 0; next;
+		} elsif ($c eq "\cE") { &right($n-$i); $i = $n; next;
+		} elsif ($c eq "\cL") {
+
+		} elsif ($c > 255) { &beep();
+		} elsif ($nchoices && $c =~ /^[\032-\376]$/) {
+			splice(@s, $i, 0, $c);
+			$n++; $i++; &puts($c);
+			foreach $j ($i..$n) { &puts($s[$j]); } &clrtoeol();  &left($n-$i);
+		} else { &beep();
+		}
+		# grep, and if $nchoices=1 return
+		$s = join("", @s);
+		@list = grep($[ <= index($_,$s), @biglist);
+		$nchoices = scalar @list;
+		$nrows = &layout(@list);
+		if ($nchoices==1 || ($nchoices && ($nrows<$maxrows))) {
+			&puts("\r"); &clrtoeol(); &up(1); &clrtoeol(); return @list;
+		}
+		&ask_for_clue($nchoices, $i, $s);
 	}
-	$irow = $newrow;
+	warn "narrow_the_search: shouldn't reach here ...\n";
+}
+sub ask_for_clue { my ($nchoices, $i, $s) = @_;
+	my $headstr; my $tailstr;
+	if ($nchoices) {
+		if ($s) {
+			$headstr = "the choices won't fit; there are still";
+			$tailstr = "of them";
+			&goto(0,1); &puts("$headstr $nchoices $tailstr"); &clrtoeol();
+			&goto(0,2); &puts("lengthen the clue : "); &right($i);
+		} else {
+			$headstr = "the choices won't fit; there are";
+			$tailstr = "of them";
+			&goto(0,1); &puts("$headstr $nchoices $tailstr"); &clrtoeol();
+			&goto(0,2); &puts("   give me a clue : "); &right($i);
+		}
+	} else {
+		&goto(0,1); &puts("No choices fit this clue !"); &clrtoeol();
+		&goto(0,2); &puts(" shorten the clue : "); &right($i);
+	}
 }
 
 # ----------------------- confirm stuff -------------------------
 
 sub confirm { my $question = shift;  # asks user Yes|No, returns 1|0
 	return(0) unless $question;  return(0) unless -t STDERR;
-	&initscr(); my $nol = &display_question($question); &puts (" (y/n) ");
-	while () { $response=&getch();  last if ($response=~/[yYnN]/);  &beep(); }
+	&initscr();
+	my $nol = &display_question($question); &puts (" (y/n) ");
+	while (1) { $response=&getch();  last if ($response=~/[yYnN]/);  &beep(); }
 	&left(6); &clrtoeol(); 
 	if ($response=~/^[yY]/) { &puts("Yes"); } else { &puts("No"); }
-	&erase_next_lines($nol); &endwin();
+	&erase_lines(1); &endwin();
 	if ($response =~ /^[yY]/) { return 1; } else { return 0 ; }
 }
 
@@ -451,7 +571,7 @@ sub view {	local($title, $text) = @_;	# or ($filename) =
 	if (! $text && -T $title && open(F,"< $title")) {
 		$nlines = 0;
 		while (<F>) { last if ($nlines++ > $maxrows); } close F;
-		if ($nlines > $maxrows) {
+		if ($nlines > (0.6*$maxrows)) {
 			system (($ENV{PAGER} || $default_pager) . " \'$title\'");
 		} else {
 			open (F,"< $title"); undef $/; local($text)=<F>; $/="\n"; close F;
@@ -476,42 +596,37 @@ sub tiview {	local ($title, $text) = @_;
 	return unless $text; local ($[) = 0;
 	$title =~ s/\t/ /g; local ($titlelength) = length $title;
 	
-	if ($size_changed) { ($maxcols, $maxrows) = &cols_and_rows(); }
+	&check_size;
 	local @rows = &fmt($text, nofill=>1);
-	# local @rows = &fmt($text);
 	&initscr ();
 	if ($titlelength > ($maxcols-35)) { &puts ("$title\r\n");
 	} else { &puts ("$title   (<enter> to continue, q to clear)\r\n");
 	}
 	&wr_screen_tiview();
 	
-	for (;;) {
+	while (1) {
 		$c = &getch();
 		if ($c eq 'q' || $c eq "\cX" || $c eq "\cW" || $c eq "\cZ"
 		|| $c eq "\cC" || $c eq "\c\\") {
-			for ($il=0; $il<=(scalar @rows); $il++) { &goto(0,$il); &clrtoeol (); }
-			&goto (0, 0); &endwin (); return 1;
+			&erase_lines(0); &endwin (); return 1;
 		} elsif ($c eq "\r") {  # <enter> retains text on screen
 			&clrtoeol; &goto (0, @rows+1); &endwin(); return 1;
 		} elsif ($c eq "\cL") {
 			&puts("\r"); &endwin; &tiview($title,$text); return 1;
 		}
 	}
-	&endwin ();
+	warn "tiview: shouldn't reach here\n";
 }
 sub wr_screen_tiview {
-	&puts("\r");
-	my $clr = "\e[K";
-	&addstr(join("$clr\r\n",@rows), "\r");
-	$icol = 0; $irow = scalar @rows;
-	&goto ($titlelength+1, 0);
+	&puts("\r", join("\e[K\r\n",@rows), "\r");
+	$icol = 0; $irow = scalar @rows; &goto ($titlelength+1, 0);
 }
 
 # -------------------------- infrastructure -------------------------
 
 sub display_question {   my $question = shift; my %options = @_;
 	# used by ask and confirm
-	if ($size_changed) {($maxcols,$maxrows)=&cols_and_rows(); $size_changed=0;}
+	&check_size;
 	my ($firstline, @otherlines);
 	if ($options{nofirstline}) {
 		@otherlines = &fmt($question);
@@ -522,14 +637,12 @@ sub display_question {   my $question = shift; my %options = @_;
 	}
 	if (@otherlines) {
 		&puts("\r\n", join("\r\n", @otherlines), "\r");
-		$icol = 0; $irow = scalar @otherlines;
 		&goto(1 + length $firstline, 0);
 	}
 	return scalar @otherlines;
 }
-sub erase_next_lines { my $n = shift;
-	&puts("\r\n"); return unless $n; &down($n-1); my $i=1;
-	while (1) { &clrtoeol(); last if $i==$n; &up(1); $i++; }
+sub erase_lines {  # leaves cursor at beginning of line $_[$[]
+	&goto(0, $_[$[]); &puts("\e[J");
 }
 sub fmt { my $text = shift; my %options = @_;
 	# Used by tiview, ask and confirm; formats the text within $maxcols cols
@@ -570,13 +683,21 @@ sub fmt { my $text = shift; my %options = @_;
    	}
 	}
 	if ($o_line) { push @o_lines, $o_line; }
-	return (@o_lines);  # should truncate to $maxrows ...
+	if ((scalar @o_lines) < $maxrows-2) { return (@o_lines);
+	} else { return splice (@o_lines, $[, $maxrows-2);
+	}
+}
+sub back_up {
+	open(TTY, ">/dev/tty") || (warn "Can't write /dev/tty: $!\n", return 0);
+	print TTY "\r\033[K\033[A\033[K";
+	close TTY;
 }
 1;
 
 __END__
 
-# POD Documentation (perldoc or pod2html this file)
+=pod
+
 =head1 NAME
 
 Term::Clui.pm - Perl module offering a Command-Line User Interface
@@ -585,17 +706,21 @@ Term::Clui.pm - Perl module offering a Command-Line User Interface
 
 	use Term::Clui;
 	$chosen = &choose('A Title', @a_list);
-	if (&confirm ($text)) { &do_something; };
-	$newtext = &edit($title, $text);
+	if (&confirm($text)) { &do_something(); };
+	$answer = &ask($question);
+	$answer = &ask($question,$suggestion);
+	$password = &ask_password('Enter password : ');
+	$newtext = &edit($title, $oldtext);
 	&edit($filename);
-	&view ($title, $text)  # if $title is not a filename
-	&view ($textfile)  # if $textfile _is_ a filename
+	&view($title, $text)  # if $title is not a filename
+	&view($textfile)  # if $textfile _is_ a filename
 
 	&edit (&choose ('Edit which file ?', grep (-T, readdir D)));
 
 =head1 DESCRIPTION
 
-Term::Clui offers a high-level user interface to give the user of
+Term::Clui
+offers a high-level user interface to give the user of
 command-line applications a consistent "look and feel".
 Its metaphor for the computer is as a human-like conversation-partner,
 and as each question/response is completed it is summarised onto one line,
@@ -614,15 +739,13 @@ It's fast, simple, and has few external dependencies.
 It doesn't use I<curses> (which is a whole-of-screen interface);
 it uses a small subset of vt100 sequences (up down left right normal
 and reverse) which are very portable.
-There is an HTML equivalent planned,
-offering similarly named routines for CGI scripts.
+
+This is Term::Clui.pm version 1.13,
+made 20020325 by root in /home/cpan/Term-Clui-1.13.
 
 =head1 WINDOW-SIZE
 
 Term::Clui attempts to handle the WINCH signal.
-This is still clunky, so the following describes
-how it's supposed to be, rather than how it currently is.
-
 If the window size is changed,
 then as soon as the user enters the next keystroke (such as ctrl-L)
 the current question/response will be redisplayed to fit the new size.
@@ -647,10 +770,16 @@ they will be displayed as a choice.
 
 =over 3
 
-=item I<ask>( $question );
+=item I<ask>( $question );  OR I<ask>( $question, $default );
 
 Asks the user the question and returns a string answer,
 with no newline character at the end.
+If the optional second argument is present, it is offered to the user
+as a default.
+For the user, left and right arrow keys move backward and forward
+through the string, delete and backspace erase the previous character,
+ctrl-B moves to the beginning, ctrl-E to the end,
+and ctrl-C, ctrl-D or ctrl-X clear the current string.
 
 =item I<ask_password>( $question );
 
@@ -662,7 +791,7 @@ Displays the question, and formats the list items onto the lines beneath it.
 The user can choose an item using arrow keys (or hjkl) and return,
 or cancel the choice with a 'q'.
 I<choose> then returns the chosen item,
-or the empty string if the choice was cancelled.
+or I<undefined> if the choice was cancelled.
 
 A DBM database is maintained of the question and its chosen response.
 The next time the user is offered a choice with the same question,
@@ -672,6 +801,13 @@ Different parts of the code, or different applications using I<Term::Clui.pm>
 can exchange defaults simply by using the same question words,
 such as "Which printer ?".  The database I<~/db/choices> is available
 to be read or written if lower-level manipulation is needed.
+
+If the items won't fit on the screen, the user is asked to enter
+a substring as a clue. As soon as the matching items will fit,
+they are displayed to be chosen as normal. If the user pressed "q"
+at this choice, they are asked if they wish to change their substring
+clue; if they reply "n" to this, choose quits and returns I<undefined>.
+This behaviour is new at version 1.12.
 
 =item I<confirm>( $question );
 
@@ -706,8 +842,7 @@ if the user presses 'q' the text is erased.
 
 =head1 DEPENDENCIES
 
-It requires Exporter, flush.pl, and (currently) complete.pl,
-which are all core Perl.
+It requires Exporter, which is core Perl.
 It uses Term::Size.pm if it's available;
 if not, it tries `tput` before guessing 80x24.
 
@@ -718,7 +853,7 @@ if they are set.
 
 =head1 AUTHOR
 
-Peter J Billam <peter@pjb.com.au>
+Peter J Billam <computing@pjb.com.au>
 
 =head1 CREDITS
 
