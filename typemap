@@ -3,14 +3,13 @@ Crypt__TEA	T_TEAPTR
 
 INPUT
 T_TEAPTR
-    if (sv_derived_from($arg, \"${(my $n=$ntype)=~s/__/::/g;\$n}\")) {
+    if (sv_derived_from($arg, \"${Package}\")) {
         IV tmp = SvIV((SV *)SvRV($arg));
         $var   = ($type) tmp;
     }
     else
-        croak(\"$var is not of type ${(my $n=$ntype)=~s/__/::/g;\$n}\");
+        croak(\"$var is not of type ${Package}\");
 
 OUTPUT
 T_TEAPTR
-    sv_setref_pv($arg, \"${(my $n=$ntype)=~s/__/::/g;\$n}\",
-                 (void *) $var);
+    sv_setref_pv($arg, \"${Package}\", (void *)$var);

@@ -1,4 +1,4 @@
-# $Id: TEA.pm,v 0.99 2001/03/28 16:36:13 ams Exp $
+# $Id: TEA.pm,v 1.00 2001/03/30 16:31:45 ams Exp $
 # Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
 
 package Crypt::TEA;
@@ -9,7 +9,7 @@ use DynaLoader;
 use vars qw( @ISA $VERSION );
 
 @ISA = qw( DynaLoader );
-($VERSION) = q$Revision: 0.99 $ =~ /(\d+\.\d+)/;
+($VERSION) = q$Revision: 1.00 $ =~ /(\d+\.\d+)/;
 
 bootstrap Crypt::TEA $VERSION;
 

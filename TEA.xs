@@ -1,5 +1,5 @@
 /*
- * $Id: TEA.xs,v 0.99 2001/03/28 16:36:13 ams Exp $
+ * $Id: TEA.xs,v 1.00 2001/03/30 16:31:45 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -57,7 +57,7 @@ tea_crypt(t, input, output, decrypt)
             output = sv_newmortal();
         outlen = 8;
 
-        if (!SvUPGRADE(output, SVt_PV))
+        if (SvREADONLY(output) || !SvUPGRADE(output, SVt_PV))
             croak("cannot use output as lvalue");
 
         tea_crypt(t,

@@ -1,17 +1,16 @@
 /*
- * $Id: _tea.c,v 0.99 2001/03/28 16:36:13 ams Exp $
+ * $Id: _tea.c,v 1.00 2001/03/30 16:31:45 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
-#include <stdlib.h>
 #include "tea.h"
 
 /* Endian-independent byte <-> long conversions. */
 
-#define c2l(c, l)  (l  = (unsigned long)*c++,        \
-                    l |= (unsigned long)*c++ <<  8,  \
-                    l |= (unsigned long)*c++ << 16,  \
-                    l |= (unsigned long)*c++ << 24)
+#define c2l(c, l)  (l  = (uint32_t)*c++,       \
+                    l |= (uint32_t)*c++ <<  8, \
+                    l |= (uint32_t)*c++ << 16, \
+                    l |= (uint32_t)*c++ << 24)
 
 #define l2c(l, c)  (*c++ = (unsigned char)(l      ), \
                     *c++ = (unsigned char)(l >>  8), \
@@ -46,8 +45,8 @@ void tea_crypt(struct tea *t,
                int decrypt)
 {
     int i, rounds;
-    unsigned long int delta = 0x9E3779B9, /* 2^31*(sqrt(5)-1) */
-                      *k, y, z, sum = 0;
+    uint32_t delta = 0x9E3779B9, /* 2^31*(sqrt(5)-1) */
+             *k, y, z, sum = 0;
 
     k = t->key;
     rounds = t->rounds;

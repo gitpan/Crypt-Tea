@@ -1,11 +1,14 @@
 /*
- * $Id: tea.h,v 0.99 2001/03/28 16:36:13 ams Exp $
+ * $Id: tea.h,v 1.00 2001/03/30 16:31:45 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
+#include <inttypes.h>
+#include <stdlib.h>
+
 struct tea {
     int rounds;
-    unsigned long int key[4];
+    u_int32_t key[4];
 };
 
 struct tea *tea_setup(unsigned char *key, int rounds);
