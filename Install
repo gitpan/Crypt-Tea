@@ -5,7 +5,7 @@ use Config;
 &check_kit;
 
 my $libdir; my $bindir; my $man1dir; my $man3dir; my $comment; my $perlbin;
-my $version = '2.00';
+my $version = '2.01';
 ($libdir, $bindir, $man1dir, $man3dir) = &defaults();
 
 if (! -t STDIN) {  # not interactive, use defaults ...
@@ -257,10 +257,10 @@ sub check_kit {
 
 	my %file_sizes = (
 		'README', 1920,
-		'Changes', 1004,
+		'Changes', 1115,
 		'MANIFEST', 90,
 		'Tea.pm', 28314,
-		'bin/tea', 3079,
+		'bin/tea', 3091,
 		'Clui', 31179,
 		'test.pl', 9855,
 	);

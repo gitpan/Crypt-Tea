@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.00';
+$VERSION = '2.01';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -609,7 +609,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-Version 2.00,
+Version 2.01,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -716,9 +716,6 @@ will take place under the name Crypt::Tea_PPJS.
 =head1 AUTHOR
 
 Peter J Billam ( http://www.pjb.com.au/comp/contact.html ).
-Thanks also to Neil Watkiss for the MakeMaker packaging, and to
-Scott Harrison for suggesting workarounds for MacOS 10.2 browsers,
-and to Morgan Burke for pointing out the problem with URL query strings.
 
 =head1 CREDITS
 
@@ -726,6 +723,9 @@ Based on TEA, as described in
 http://www.cl.cam.ac.uk/ftp/papers/djw-rmn/djw-rmn-tea.html ,
 and on some help from I<Applied Cryptography> by Bruce Schneier
 as regards the modes of use.
+Thanks also to Neil Watkiss for the MakeMaker packaging, and to
+Scott Harrison for suggesting workarounds for MacOS 10.2 browsers,
+and to Morgan Burke for pointing out the problem with URL query strings.
 
 =head1 SEE ALSO
 
