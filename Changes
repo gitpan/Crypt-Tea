@@ -1,3 +1,8 @@
+1.10    2001-05-04
+
+    * The module (with minor updates) is now distributed under the
+      Artistic License.
+
 1.07    2001-04-19
 
     * This release should build cleanly under Win32. It still crashes

@@ -1,17 +1,14 @@
 /*
- * $Id: TEA.xs,v 1.07 2001/04/19 07:01:32 ams Exp $
+ * $Id: TEA.xs,v 1.10 2001/05/04 07:55:01 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#include "ppport.h"
 
 #include "tea.h"
-
-#ifndef sv_undef
-#define sv_undef PL_sv_undef
-#endif
 
 typedef struct tea * Crypt__TEA;
 
@@ -54,7 +51,7 @@ tea_crypt(self, input, output, decrypt)
         if (inlen != 8)
             croak("input must be 8 bytes long");
 
-        if (output == &sv_undef)
+        if (output == &PL_sv_undef)
             output = sv_newmortal();
         outlen = 8;
 

@@ -4,6 +4,7 @@ Makefile.PL
 README
 TEA.pm
 TEA.xs
+ppport.h
 _tea.c
 tea.h
 test.pl

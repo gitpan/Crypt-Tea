@@ -1,5 +1,5 @@
 /*
- * $Id: _tea.c,v 1.07 2001/04/19 07:01:32 ams Exp $
+ * $Id: _tea.c,v 1.10 2001/05/04 07:55:01 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -25,21 +25,21 @@
 
 struct tea *tea_setup(unsigned char *key, int rounds)
 {
-    struct tea *t = malloc(sizeof(struct tea));
+    struct tea *self = malloc(sizeof(struct tea));
 
-    if (t) {
-        t->rounds = rounds;
+    if (self) {
+        self->rounds = rounds;
 
-        t->key[0] = strtonl(key);
-        t->key[1] = strtonl(key+4);
-        t->key[2] = strtonl(key+8);
-        t->key[3] = strtonl(key+12);
+        self->key[0] = strtonl(key);
+        self->key[1] = strtonl(key+4);
+        self->key[2] = strtonl(key+8);
+        self->key[3] = strtonl(key+12);
     }
 
-    return t;
+    return self;
 }
 
-void tea_crypt(struct tea *t,
+void tea_crypt(struct tea *self,
                unsigned char *input, unsigned char *output,
                int decrypt)
 {
@@ -47,24 +47,24 @@ void tea_crypt(struct tea *t,
     uint32_t delta = 0x9E3779B9, /* 2^31*(sqrt(5)-1) */
              *k, y, z, sum = 0;
 
-    k = t->key;
-    rounds = t->rounds;
+    k = self->key;
+    rounds = self->rounds;
 
     y = strtonl(input);
     z = strtonl(input+4);
 
-    if (decrypt) {
+    if (!decrypt) {
+        for (i = 0; i < rounds; i++) {
+            y += ((z << 4 ^ z >> 5) + z) ^ (sum + k[sum & 3]);
+            sum += delta;
+            z += ((y << 4 ^ y >> 5) + y) ^ (sum + k[sum >> 11 & 3]);
+        }
+    } else {
         sum = delta * rounds;
         for (i = 0; i < rounds; i++) {
             z -= ((y << 4 ^ y >> 5) + y) ^ (sum + k[sum >> 11 & 3]);
             sum -= delta;
             y -= ((z << 4 ^ z >> 5) + z) ^ (sum + k[sum & 3]);
-        }
-    } else {
-        for (i = 0; i < rounds; i++) {
-            y += ((z << 4 ^ z >> 5) + z) ^ (sum + k[sum & 3]);
-            sum += delta;
-            z += ((y << 4 ^ y >> 5) + y) ^ (sum + k[sum >> 11 & 3]);
         }
     }
 

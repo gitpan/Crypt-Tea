@@ -1,4 +1,4 @@
-# $Id: TEA.pm,v 1.07 2001/04/19 07:01:32 ams Exp $
+# $Id: TEA.pm,v 1.10 2001/05/04 07:55:01 ams Exp $
 # Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
 
 package Crypt::TEA;
@@ -9,7 +9,7 @@ use DynaLoader;
 use vars qw( @ISA $VERSION );
 
 @ISA = qw( DynaLoader );
-($VERSION) = q$Revision: 1.07 $ =~ /([\d.]+)/;
+($VERSION) = q$Revision: 1.10 $ =~ /([\d.]+)/;
 
 bootstrap Crypt::TEA $VERSION;
 
@@ -21,7 +21,6 @@ sub new
     my ($class, $key, $rounds) = @_;
 
     croak "Usage: ".__PACKAGE__."->new(\$key [, \$rounds])" unless $key;
-
     return Crypt::TEA::setup($key, $rounds || 32);
 }
 
@@ -29,7 +28,7 @@ sub encrypt
 {
     my ($self, $data) = @_;
 
-    croak "Usage: \$tea->encrypt(\$data)" unless ref($self) && $data;
+    croak "Usage: \$cipher->encrypt(\$data)" unless ref($self) && $data;
     $self->crypt($data, $data, 0);
 }
 
@@ -37,7 +36,7 @@ sub decrypt
 {
     my ($self, $data) = @_;
 
-    croak "Usage: \$tea->decrypt(\$data)" unless ref($self) && $data;
+    croak "Usage: \$cipher->decrypt(\$data)" unless ref($self) && $data;
     $self->crypt($data, $data, 1);
 }
 
@@ -53,11 +52,11 @@ Crypt::TEA - Tiny Encryption Algorithm
 
 use Crypt::TEA;
 
-$tea = Crypt::TEA->new($key);
+$cipher = Crypt::TEA->new($key);
 
-$ciphertext = $tea->encrypt($plaintext);
+$ciphertext = $cipher->encrypt($plaintext);
 
-$plaintext  = $tea->decrypt($ciphertext);
+$plaintext  = $cipher->decrypt($ciphertext);
 
 =head1 DESCRIPTION
 
@@ -125,5 +124,5 @@ Abhijit Menon-Sen <ams@wiw.org>
 
 Copyright 2001 Abhijit Menon-Sen. All rights reserved.
 
-This is free software; you may redistribute and/or modify it under the
-same terms as Perl itself.
+This software is distributed under the terms of the Artistic License
+<URL:http://ams.wiw.org/code/artistic.txt>.
