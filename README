@@ -23,6 +23,7 @@ that's all ! or you can still do it the old way ...
 	make install
 
 For up-to-date source, see http://www.cpan.org/SITES.html
+and look for the directory authors/id/P/PJ/PJB
 
 There is a similarly-named module Crypt::TEA.pm by Abhijit Menon-Sen.
 The functionality of this Tea.pm is quite different from Abhijit's

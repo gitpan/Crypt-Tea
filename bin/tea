@@ -22,7 +22,7 @@ usage:
 
 For encryption and decryption, you will be asked for a password.
 It should be a sufficiently longish string; say 17 random 8-bit bytes.
-Version 1.42,
+Version 1.43,
 #COMMENT#
 
 EOT

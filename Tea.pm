@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '1.42';
+$VERSION = '1.43';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -280,22 +280,22 @@ function ascii2bytes(a) { // converts pseudo-base64 to array of bytes
  var ib = 0;  var b = new Array();
  var carry;
  while (1) {   // reads 4 chars and produces 3 bytes
-  while (1) { ia++; if (ia>=la) return b; if (a2b[a[ia]] != null) break; }
-  b[ib]  = a2b[a[ia]]<<2;
-  while (1) { ia++; if (ia>=la) return b; if (a2b[a[ia]] != null) break; }
-  carry=a2b[a[ia]];  b[ib] |= carry>>>4; ib++;
+  while (1) { ia++; if (ia>=la) return b; if (a2b[a.charAt(ia)]!=null) break; }
+  b[ib]  = a2b[a.charAt(ia)]<<2;
+  while (1) { ia++; if (ia>=la) return b; if (a2b[a.charAt(ia)]!=null) break; }
+  carry=a2b[a.charAt(ia)];  b[ib] |= carry>>>4; ib++;
   // if low 4 bits of carry are 0 and its the last char, then break
   carry = 0xF & carry;
   if (carry == 0 && ia == (la-1)) return b;
   b[ib]  = carry<<4;
-  while (1) { ia++; if (ia>=la) return b; if (a2b[a[ia]] != null) break; }
-  carry=a2b[a[ia]];  b[ib] |= carry>>>2; ib++;
+  while (1) { ia++; if (ia>=la) return b; if (a2b[a.charAt(ia)]!=null) break; }
+  carry=a2b[a.charAt(ia)];  b[ib] |= carry>>>2; ib++;
   // if low 2 bits of carry are 0 and its the last char, then break
   carry = 03 & carry;
   if (carry == 0 && ia == (la-1)) return b;
   b[ib]  = carry<<6;
-  while (1) { ia++; if (ia>=la) return b; if (a2b[a[ia]] != null) break; }
-  b[ib] |= a2b[a[ia]];   ib++;
+  while (1) { ia++; if (ia>=la) return b; if (a2b[a.charAt(ia)]!=null) break; }
+  b[ib] |= a2b[a.charAt(ia)];   ib++;
  }
  return b;
 }
@@ -609,7 +609,7 @@ bytes for single encryption.
 As of version 1.34, various Htauth-specific hook routines
 have now been moved out into the I<CGI::Htauth.pm> module.
 
-Version 1.42,
+Version 1.43,
 #COMMENT#
 
 (c) Peter J Billam 1998

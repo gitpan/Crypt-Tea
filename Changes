@@ -8,3 +8,4 @@
 20020603 1.40 Makefile.PL uses MakeMaker, new Install
 20020620 1.41 my $de0, $de1 bug fixed in line 182 of Tea.pm
 20020626 1.42 Install gets default locations right
+20020917 1.43 JS portability bug fixed in ascii2bytes, a[i] to a.charAt(i)
