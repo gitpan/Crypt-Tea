@@ -13,9 +13,9 @@
 # Usage:
 #    use Tea;
 #    $key = 'PUFgob$*LKDF D)(F IDD&P?/';
-#    $ascii_ciphertext = &encrypt ($plaintext, $key);
+#    $ascii_cyphertext = &encrypt ($plaintext, $key);
 #    ...
-#    $plaintext_again = &decrypt ($ascii_ciphertext, $key);
+#    $plaintext_again = &decrypt ($ascii_cyphertext, $key);
 #    ...
 #    $signature = &asciidigest ($text);
 #
@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.04';
+$VERSION = '2.05';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -589,17 +589,20 @@ Usage:
 
 	use Crypt::Tea;
 	$key = 'PUFgob$*LKDF D)(F IDD&P?/';
-	$ascii_ciphertext = &encrypt ($plaintext, $key);
+	$ascii_cyphertext = &encrypt ($plaintext, $key);
 	...
-	$plaintext_again = &decrypt ($ascii_ciphertext, $key);
+	$plaintext_again = &decrypt ($ascii_cyphertext, $key);
 	...
 	$signature = &asciidigest ($text);
 
 In CGI scripts:
 
 	use Crypt::Tea;
-	print &tea_in_javascript;  # now the browser can
-	# encrypt and decrypt ! see below for examples ...
+	print &tea_in_javascript;
+   # now the browser can encrypt and decrypt ! In JS:
+   var ascii_ciphertext = encrypt (plaintext, key);
+   var plaintext_again  = decrypt (ascii_ciphertext, key);
+   var signature = asciidigest (text);
 
 =head1 DESCRIPTION
 
@@ -609,7 +612,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-Version 2.04,
+Version 2.05,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -622,7 +625,7 @@ Version 2.04,
 
 Encrypts with CBC (Cipher Block Chaining)
 
-=item I<decrypt>( $ciphertext, $key );
+=item I<decrypt>( $cyphertext, $key );
 
 Decrypts with CBC (Cipher Block Chaining)
 
@@ -649,38 +652,91 @@ for use in CGI scripts to communicate with browsers.
 
 =head1 JAVASCRIPT
 
+At the browser end, the following functions offer the same
+functionality as their perl equivalents above:
+
+=over 3
+
+=item I<encrypt> ( str, keystr )
+
+=item I<decrypt> ( ascii, keystr )
+
+=item I<asciidigest> ( str );
+
+=back
+
 Of course the same Key must be used by the Perl on the server
-and by the JavaScript in the browser, and of course you don't
-want to transmit the Key in cleartext between them.
+and by the JavaScript in the browser, and of course you
+don't want to transmit the Key in cleartext between them.
 Let's assume you've already asked the user to fill in a form
-asking for their Username.  This username can be transmitted
+asking for their Username, and that this username can be transmitted
 back and forth in cleartext as an ordinary form variable.
 
 On the server, typically you will retrieve the Key from a
 database of some sort, for example:
 
+ $plaintext = "<P>Hello World !</P>\n";
  dbmopen %keys, '/home/wherever/passwords';
  $key = $keys{$username};
  dbmclose %keys;
- $ciphertext = &encrypt ($plaintext, $key);
+ $cyphertext = &encrypt ($plaintext, $key);
 
 At the browser end there are various ways of doing it.
 Easiest is to ask the user for their password every time
-they submit a form or view an encrypted page.
+they view an encrypted page, or submit a form.
 
- print <<EOT;
+ print &tea_in_javascript(), <<EOT;
  <SCRIPT LANGUAGE="JavaScript"> <!--
- key = prompt("Password ?","");
- document.write(decrypt("$ciphertext", key));
+ var key = prompt("Password ?","");
+ document.write(decrypt("$cyphertext", key));
  // -->
  </SCRIPT>
  EOT
 
-If you want the browser to remember its key from page to page,
+To submit a FORM with encrypted cyphertext, the neatest way is to
+contruct two FORMs; one overt one which the user fills in but which never
+actually gets submitted, and one covert one which will hold the cyphertext.
+
+ print <<'EOT';
+ <SCRIPT LANGUAGE="JavaScript"> <!--
+ function submitter (form) { // NB: a javascript: url passes the frame
+   var plaintext = '';
+   for (var i=0; i<form.length; i++) { // construct ff-separated list
+     var e = form.elements[i];
+     plaintext += (e.name+"\f"+ e.value+"\f"); 
+   }
+   document.covert.cyphertext.value = encrypt (plaintext, key);
+   document.covert.submit();   // submit the covert form
+   return false;  // don't actually submit the overt form
+ }
+ // -->
+ </SCRIPT>
+ EOT
+
+ print <<EOT;
+ <FORM NAME="covert" ACTION="$ENV{SCRIPT_NAME}" METHOD="post">
+ <INPUT TYPE="hidden" NAME="username" VALUE="$username">
+ <INPUT TYPE="hidden" NAME="cyphertext" VALUE="">
+ </FORM>
+
+ <FORM NAME="overt" onSubmit="return submitter(this)">
+ <TABLE>
+ <TR><TH>Contact</TH><TD><INPUT TYPE="text" NAME="contact"></TD></TR>
+ <TR><TH>Date   </TH><TD><INPUT TYPE="text" NAME="date">   </TD></TR>
+ <TR><TH>Report </TH><TD><INPUT TYPE="text" NAME="report"> </TD></TR>
+ </TABLE>
+ <INPUT TYPE="submit">
+ </FORM>
+ EOT
+
+See the cgi script examples/tea_demo.cgi in the distribution directory.
+
+If you want the browser to remember its Key from page to page,
 to form a session, then things get harder.
 If you store the Key in a Cookie, then it is vulnerable to
 any imposter server who imitates your IP address,
 and also to anyone who sits down at the user's computer.
+However, this remains the most practical option.
 
 The alternative is to store the Key in a JavaScript variable,
 but unfortunately all JavaScript variables get anihilated when
@@ -689,18 +745,18 @@ Therefore you have to store the Key in a JavaScript variable
 in a frameset, open up a subframe covering almost all the screen,
 and load the subsequent pages into that subframe;
 they can then use I<parent.key> to encrypt and decrypt.
+This can become intractable.
 See CGI::Htauth.pm for attempts to use this kind of technique.
 
 =head1 ROADMAP
 
-Version 1.45 will probably remain the final version in the 1.xx branch;
-it is stable, and fully compatible with earlier versions.
-Unfortunately, the '+' character it used in the ascii-encoding is a reserved
-character in the query part of URLs; therefore versions 2.xx use '-' instead.
 Versions 2.xx can decrypt files encrypted by 1.xx,
 and version 1.45 can decrypt files encrypted by versions 2.xx.
 However, the digest (signature) functions of 1.xx and 2.xx differ
 in their use of '+' and '-' characters respectively.
+Version 1.45 will remain the final version in the 1.xx branch; the
+'+' character it used in the ascii-encoding is a reserved character
+in the query part of URLs; therefore versions 2.xx use '-' instead.
 
 Crypt::Tea can conflict with a similarly-named Crypt::TEA by Abhijit
 Menon-Sen.  The functionality of Crypt::Tea is different from Abhijit's
@@ -710,6 +766,11 @@ code which implements compatible functions. Unfortunately, Microsoft
 operating systems confuse the two names and are unable to install both.
 Therefore, after version 2.xx, further development in Crypt::Tea
 will take place under the name Crypt::Tea_PPJS.
+
+Currently this is vapourware, but candidate additions after the
+move to Crypt::Tea_PPJS could include Diffie-Hellman negotiation,
+triple-encryption, the use of the newer Tea algorithm, and some use
+of C for extra speed.
 
 =head1 AUTHOR
 
@@ -727,6 +788,7 @@ and to Morgan Burke for pointing out the problem with URL query strings.
 
 =head1 SEE ALSO
 
+examples/tea_demo.cgi,
 http://www.pjb.com.au/comp, CGI::Htauth.pm, tea(1), perl(1).
 
 =cut
