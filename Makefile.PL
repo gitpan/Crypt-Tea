@@ -15,7 +15,7 @@ Use the arrow keys (or h,j,k,l) and <Return> to make your choices.
 
 EOT
 
-my $version = '1.35';
+my $version = '1.36';
 my $bindir  = &bindir;
 my $libdir  = &libdir . '/Crypt';
 my $mandir  = &mandir;
@@ -246,7 +246,7 @@ sub check_kit {
 		'Tea.pm', 25625,
 		'tea', 2997,
 		'Clui', 29518,
-		'test_script', 3417,
+		'test_script', 3416,
 		'test.html', 17781,
 	);
 
