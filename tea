@@ -1,0 +1,49 @@
+#! #PERLBIN#
+#########################################################################
+#        This Perl script is Copyright (c) 2000, Peter J Billam         #
+#               c/o P J B Computing, www.pjb.com.au                     #
+#                                                                       #
+#     This program is free software; you can redistribute it and/or     #
+#            modify it under the same terms as Perl itself.             #
+#########################################################################
+use Crypt::Tea;
+
+while ($ARGV[$[] =~ /^-/) {
+	if ($ARGV[$[] =~ /^-c/)      { $encrypt='yes'; shift;
+	} elsif ($ARGV[$[] =~ /^-s/) { $sign='yes'; shift;
+	} elsif ($ARGV[$[] =~ /^-j/) { print &tea_in_javascript;  exit 1;
+	} else { print <<EOT; exit;
+usage:
+   tea -c filename   # encrypts filename
+   tea filename      # decrypts filename
+   tea -s filename   # calculates ascii digital signature for filename
+   tea -j            # outputs JavaScript code to do compatible encryption
+   tea -h            # prints this message
+
+For encryption and decryption, you will be asked for a password.
+It should be a sufficiently longish string; say 17 random 8-bit bytes.
+Version #VERSION#
+
+EOT
+	}
+}
+#    tea -c3 filename  # triple-encrypts filename
+#    tea -3 filename   # triple-decrypts filename
+# for single encryption, or 3 times that to justify triple encryption.
+
+undef $/; my $text = <>; $/="\n";
+if ($sign) { print &asciidigest ($text) . "\n"; exit 0; }
+
+open(TTY,  ">/dev/tty")  || die "Can't write /dev/tty: $!\n";
+open(TTYIN, "</dev/tty") || die "Can't read /dev/tty: $!\n";
+print TTY 'Password: '; my $key = <TTYIN>;
+close TTY; close TTYIN;
+$key =~ s/[\r\n]*$//;
+exit unless $key;
+
+if ($encrypt) {
+	print &encrypt ($text, $key), "\n";
+} else {
+	print &decrypt ($text, $key);
+}
+exit 0;
