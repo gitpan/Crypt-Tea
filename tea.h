@@ -1,5 +1,5 @@
 /*
- * $Id: tea.h,v 1.00 2001/03/30 16:31:45 ams Exp $
+ * $Id: tea.h,v 1.01 2001/03/30 17:24:15 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -8,7 +8,7 @@
 
 struct tea {
     int rounds;
-    u_int32_t key[4];
+    uint32_t key[4];
 };
 
 struct tea *tea_setup(unsigned char *key, int rounds);

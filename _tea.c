@@ -1,5 +1,5 @@
 /*
- * $Id: _tea.c,v 1.00 2001/03/30 16:31:45 ams Exp $
+ * $Id: _tea.c,v 1.01 2001/03/30 17:24:15 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
