@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.02';
+$VERSION = '2.03';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -463,10 +463,10 @@ function tea_code (v, k) {
  while (n-- > 0) {
   sum -= 1640531527; // TEA magic number 0x9e3779b9 
   sum = sum|0;  // force it back to 32-bit int
-  v0 += ((v1<<4)+k0) ^ (v1+sum) ^ ((v1>>>5)+k1) ;
-  v1 += ((v0<<4)+k2) ^ (v0+sum) ^ ((v0>>>5)+k3) ;
+  v0 += ((v1<<4)+k0) ^ (v1+sum) ^ ((v1>>>5)+k1) ; v0 = v0|0 ;
+  v1 += ((v0<<4)+k2) ^ (v0+sum) ^ ((v0>>>5)+k3) ; v1 = v1|0 ;
  }
- var w = new Array(); w[0] = v0|0; w[1] = v1|0; return w;
+ var w = new Array(); w[0] = v0; w[1] = v1; return w;
 }
 function tea_decode (v, k) {
  // TEA. 2-int (64-bit) cyphertext block in v. 4-int (128-bit) key in k.
@@ -475,12 +475,12 @@ function tea_decode (v, k) {
  var sum = 0; var n = 32;
  sum = -957401312 ; // TEA magic number 0x9e3779b9<<5 
  while (n-- > 0) {
-  v1 -= ((v0<<4)+k2) ^ (v0+sum) ^ ((v0>>>5)+k3) ;
-  v0 -= ((v1<<4)+k0) ^ (v1+sum) ^ ((v1>>>5)+k1) ;
+  v1 -= ((v0<<4)+k2) ^ (v0+sum) ^ ((v0>>>5)+k3) ; v1 = v1|0 ;
+  v0 -= ((v1<<4)+k0) ^ (v1+sum) ^ ((v1>>>5)+k1) ; v0 = v0|0 ;
   sum += 1640531527; // TEA magic number 0x9e3779b9 ;
   sum = sum|0; // force it back to 32-bit int
  }
- var w = new Array(); w[0] = v0|0; w[1] = v1|0; return w;
+ var w = new Array(); w[0] = v0; w[1] = v1; return w;
 }
 
 // ------------- assocarys used by the conversion routines -----------
@@ -609,7 +609,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-Version 2.02,
+Version 2.03,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -693,7 +693,7 @@ See CGI::Htauth.pm for attempts to use this kind of technique.
 
 =head1 ROADMAP
 
-This is version 2.00.
+This is version 2.03.
 
 Version 1.45 will probably remain the final version in the 1.xx branch;
 it is stable, and fully compatible with earlier versions.

@@ -17,4 +17,5 @@
 20040922 1.45 + changed to - to avoid URL-encoding, with backward compatibility
 20040928 2.00 uses - in ascii for URL-resistance
 20040930 2.01 test.html ascii2bytes should return 216 not 217
-20041005 2.01 test.pl displays correct version
+20041005 2.02 test.pl displays correct version
+20041011 2.03 JS tea_code and tea_decode now work on Konqueror5.0
