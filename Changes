@@ -1,8 +1,9 @@
 20011217 Crypt-Tea-1.30 Tiny Encryption Algorithm in Perl & JavaScript
-20020121 Crypt-Tea-1.31 some bugs fixed, Htauth hooks & outdated subs stripped
-20020310 Crypt-Tea-1.32
-20020325 Crypt-Tea-1.33 Bug fixed in JS ascii decoding
-20020403 Crypt-Tea-1.34 Htauth hooks removed into CGI::Htauth.pm
-20020523 Crypt-Tea-1.35 mv Tea.raw Tea.pm for CPAN, include test.html
-20020601 Crypt-Tea-1.36 fixed 'require Tea.raw' bug in test_script
-20020603 Crypt-Tea-1.40 Makefile.PL uses MakeMaker, new Install
+20020121 1.31 some bugs fixed, Htauth hooks & outdated subs stripped
+20020310 1.32
+20020325 1.33 Bug fixed in JS ascii decoding
+20020403 1.34 Htauth hooks removed into CGI::Htauth.pm
+20020523 1.35 mv Tea.raw Tea.pm for CPAN, include test.html
+20020601 1.36 fixed 'require Tea.raw' bug in test_script
+20020603 1.40 Makefile.PL uses MakeMaker, new Install
+20020620 1.41 my $de0, $de1 bug fixed in line 182 of Tea.pm

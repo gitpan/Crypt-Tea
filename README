@@ -14,6 +14,7 @@ used by the CGI::Htauth.pm authentication and encryption module ...
 
 To install ( cool ! new ! interactive ! ) just:
    perl Install
+(but this doesn't yet work yet under Windows)
 
 that's all ! or you can still do it the old way ...
 	perl Makefile.PL

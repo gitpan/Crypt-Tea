@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '1.40';
+$VERSION = '1.41';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -179,7 +179,7 @@ sub decrypt { my ($acstr, $key) = @_;   # decodes with CBC
 	use integer;
 	return '' unless $acstr; return '' unless $key;
 	@key = &binarydigest($key);
-	my $v0; my $v1; my $c0; my $c1; my @pblocks = (); my $de0, $de1;
+	my $v0; my $v1; my $c0; my $c1; my @pblocks = (); my $de0; my $de1;
 	my $lastc0 = 0x61626364; my $lastc1 = 0x62636465; # CBC Init Val. Retain!
 	my @cblocks = &str2binary( &ascii2str($acstr) );
 	while (1) {
@@ -609,7 +609,7 @@ bytes for single encryption.
 As of version 1.34, various Htauth-specific hook routines
 have now been moved out into the I<CGI::Htauth.pm> module.
 
-Version 1.40,
+Version 1.41,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -647,7 +647,8 @@ for use in CGI scripts to communicate with browsers.
 
 =head1 AUTHOR
 
-Peter J Billam <peter@pjb.com.au>
+Peter J Billam <peter@pjb.com.au>,
+with thanks also to Neil Watkiss for MakeMaker packaging.
 
 =head1 CREDITS
 
