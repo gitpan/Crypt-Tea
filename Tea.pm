@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '1.45';
+$VERSION = '2.00';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -40,10 +40,10 @@ my %a2b = (
 	g=>040, h=>041, i=>042, j=>043, k=>044, l=>045, m=>046, n=>047,
 	o=>050, p=>051, q=>052, r=>053, s=>054, t=>055, u=>056, v=>057,
 	w=>060, x=>061, y=>062, z=>063, '0'=>064,  '1'=>065, '2'=>066, '3'=>067,
-	'4'=>070,'5'=>071,'6'=>072,'7'=>073,'8'=>074,'9'=>075,'+'=>076,'_'=>077,
+	'4'=>070,'5'=>071,'6'=>072,'7'=>073,'8'=>074,'9'=>075,'-'=>076,'_'=>077,
 );
 my %b2a = reverse %a2b;
-$a2b{'-'}=076;
+$a2b{'+'}=076;
 # end config
 
 # ------------------ infrastructure ...
@@ -569,7 +569,7 @@ a2b["s"]=44; a2b["t"]=45; a2b["u"]=46; a2b["v"]=47;
 a2b["w"]=48; a2b["x"]=49; a2b["y"]=50; a2b["z"]=51;
 a2b["0"]=52; a2b["1"]=53; a2b["2"]=54; a2b["3"]=55;
 a2b["4"]=56; a2b["5"]=57; a2b["6"]=58; a2b["7"]=59;
-a2b["8"]=60; a2b["9"]=61; a2b["+"]=62; a2b["_"]=63;
+a2b["8"]=60; a2b["9"]=61; a2b["-"]=62; a2b["_"]=63;
 
 b2a = new Object();
 for (b in a2b) { b2a[a2b[b]] = ''+b; }
@@ -609,7 +609,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-Version 1.45,
+Version 2.00,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -628,11 +628,13 @@ Decrypts with CBC (Cipher Block Chaining)
 
 =item I<binary2ascii>( $a_binary_string );
 
-Provide an ascii text encoding of the binary argument.
+Provides an ascii text encoding of the binary argument.
 If Tea.pm is not being invoked from a GCI script,
 the ascii is split into lines of 72 characters.
 
 =item I<ascii2binary>( $an_ascii_string );
+
+Provides the binary original of an ascii text encoding.
 
 =item I<asciidigest>( $a_string );
 
@@ -691,14 +693,16 @@ See CGI::Htauth.pm for attempts to use this kind of technique.
 
 =head1 ROADMAP
 
-This is version 1.45, and will probably be the final version in the 1.xx
-branch.  It is stable, and fully compatibility with earlier versions.
-Unfortunately, the '+' character used in the ascii-encoding is a reserved
-character in the query part of URLs; therefore versions 2.xx will switch
-to using '-' instead. Versions 2.xx will decrypt files encrypted by 1.xx,
-and version 1.45 will decrypt files encrypted by versions 2.xx. However,
-the digest (signature) functions of 1.xx and 2.xx will differ in their
-use of '+' and '-' characters respectively.
+This is version 2.00.
+
+Version 1.45 will probably remain the final version in the 1.xx branch;
+it is stable, and fully compatible with earlier versions.
+Unfortunately, the '+' character it used in the ascii-encoding is a reserved
+character in the query part of URLs; therefore versions 2.xx use '-' instead.
+Versions 2.xx can decrypt files encrypted by 1.xx,
+and version 1.45 can decrypt files encrypted by versions 2.xx.
+However, the digest (signature) functions of 1.xx and 2.xx differ
+in their use of '+' and '-' characters respectively.
 
 Crypt::Tea can conflict with a similarly-named Crypt::TEA by Abhijit
 Menon-Sen.  The functionality of Crypt::Tea is different from Abhijit's
@@ -713,7 +717,8 @@ will take place under the name Crypt::Tea_PPJS.
 
 Peter J Billam ( http://www.pjb.com.au/comp/contact.html ).
 Thanks also to Neil Watkiss for the MakeMaker packaging, and to
-Scott Harrison for suggesting workarounds for MacOS 10.2 browsers.
+Scott Harrison for suggesting workarounds for MacOS 10.2 browsers,
+and to Morgan Burke for pointing out the problem with URL query strings.
 
 =head1 CREDITS
 

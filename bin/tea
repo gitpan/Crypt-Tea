@@ -22,7 +22,7 @@ usage:
 
 For encryption and decryption, you will be asked for a password.
 It should be a sufficiently longish string; say 17 random 8-bit bytes.
-Version 1.45,
+Version 2.00,
 #COMMENT#
 
 EOT
@@ -81,7 +81,7 @@ JavaScript code which offers identical functions in JS, and this can
 be used by GCIs to feed to the browser.  Triple encryption will be
 offered later.
 
-Version 1.45,
+Version 2.00,
 #COMMENT#
 
 =head1 AUTHOR

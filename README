@@ -22,10 +22,12 @@ that's all ! or you can still do it the old way ...
 For up-to-date source, see http://www.cpan.org/SITES.html
 and look for the directory authors/id/P/PJ/PJB
 
-This is version 1.45, and will probably be the final version in the 1.xx
-branch.  It is stable, and fully compatibility with earlier versions.
+This is version 2.00.
+
+Version 1.45 will probably be the final version in the 1.xx branch.
+It is stable, and fully compatible with earlier versions.
 Unfortunately, the '+' character used in the ascii-encoding is a reserved
-character in the query part of URLs; therefore versions 2.xx will switch
+character in the query part of URLs; therefore versions 2.xx switches
 to using '-' instead. Versions 2.xx will decrypt files encrypted by 1.xx,
 and version 1.45 will decrypt files encrypted by versions 2.xx. However,
 the digest (signature) functions of 1.xx and 2.xx will differ in their

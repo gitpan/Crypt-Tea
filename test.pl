@@ -55,10 +55,10 @@ re-encrypted and re-decrypted by <I>JavaScript</I>.
 EOT
 
 my $d = &asciidigest ($text); 
-if ($d eq '5sO762E_kw3WK++EiHhHiA') {
+if ($d eq '5sO762E_kw3WK--EiHhHiA') {
 	print "asciidigest OK ...\n";
 } else {
-	print "ERROR: asciidigest was $d, should be 5sO762E_kw3WK++EiHhHiA\n";
+	print "ERROR: asciidigest was $d, should be 5sO762E_kw3WK--EiHhHiA\n";
 	exit 1;
 }
 
@@ -70,12 +70,12 @@ if ($p eq $text) {
 	print "ERROR: encrypt and decrypt failed: encrypt was\n$c\n";
 	exit 1;
 }
-$c =~ tr/+/-/;
+$c =~ tr/-/+/;
 $p = &decrypt ($c, $key1);
 if ($p eq $text) {
-	print "version2-compatible decrypt OK ...\n";
+	print "version1-compatible decrypt OK ...\n";
 } else {
-	print "ERROR: version2-compatible decrypt failed: encrypt was\n$c\n";
+	print "ERROR: version1-compatible decrypt failed: encrypt was\n$c\n";
 	exit 1;
 }
 
@@ -100,7 +100,7 @@ and paste it into an email to
 </P>
 <PRE>
 <SCRIPT LANGUAGE="JavaScript"> <!--
-document.write('Crypt::Tea 1.45 on ' + navigator.appName
+document.write('Crypt::Tea 2.00 on ' + navigator.appName
  + ' ' + navigator.appVersion);
 // -->
 </SCRIPT>
@@ -112,7 +112,7 @@ blocks[0]=1234567; blocks[1]=7654321; blocks[2]=9182736; blocks[3]=8273645;
 document.write('   returns ' + binary2ascii(blocks));
 // -->
 </SCRIPT>
- should be ABLWhwB0y7EAjB4QAH4+7Q
+ should be ABLWhwB0y7EAjB4QAH4-7Q
 
 ascii2binary('GUQEX19vG3csxE9v2Vtwh') returns 
 <SCRIPT LANGUAGE="JavaScript"> <!--
