@@ -5,12 +5,12 @@ use Config;
 &check_kit;
 
 my $libdir; my $bindir; my $man1dir; my $man3dir; my $comment; my $perlbin;
-my $version = '1.41';
+my $version = '1.42';
 ($libdir, $bindir, $man1dir, $man3dir) = &defaults();
 
 if (! -t STDIN) {  # not interactive, use defaults ...
 	if (! $libdir) { die "Sorry, can't write to $libdir\n"; }
-	&install($libdir, $bindir, $man1dir, $man3dir);
+	&install("$libdir/Crypt", $bindir, $man1dir, $man3dir);
 	exit 0;
 }
 
@@ -20,15 +20,15 @@ if ($libdir) {
 	if ($choice eq 'Cancel') { exit 0; }
 	if ($choice eq 'using system default locations') {
 		if (! $libdir) { die "Sorry, can't write to $libdir\n"; }
-		&install($libdir, $bindir, $man1dir, $man3dir);
+		&install("$libdir/Crypt", $bindir, $man1dir, $man3dir);
 		exit 0;
 	}
 }
 
-$libdir  = &libdir . '/Crypt';
+$libdir  = &libdir;
 $bindir  = &bindir;
 ($man1dir, $man3dir)  = &mandir;
-&install($libdir, $bindir, $man1dir, $man3dir);
+&install("$libdir/Crypt", $bindir, $man1dir, $man3dir);
 exit 0;
 
 # --------------------- infrastructure ---------------------
@@ -257,7 +257,7 @@ sub check_kit {
 
 	my %file_sizes = (
 		'README', 1669,
-		'Changes', 485,
+		'Changes', 536,
 		'MANIFEST', 90,
 		'Tea.pm', 25658,
 		'bin/tea', 3003,

@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '1.41';
+$VERSION = '1.42';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -609,7 +609,7 @@ bytes for single encryption.
 As of version 1.34, various Htauth-specific hook routines
 have now been moved out into the I<CGI::Htauth.pm> module.
 
-Version 1.41,
+Version 1.42,
 #COMMENT#
 
 (c) Peter J Billam 1998
