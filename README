@@ -36,4 +36,4 @@ browser end.  Abhijit's TEA.pm is written in C, and uses the further
 Crypt::CBC CPAN module; it will run faster, and provides identically
 strong encryption, but will not encrypt an http connection.
 
-Peter J Billam    computing@pjb.com.au    http://www.pjb.com.au
+Peter J Billam    peter.billam@pjb.com.au    http://www.pjb.com.au

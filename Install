@@ -5,7 +5,7 @@ use Config;
 &check_kit;
 
 my $libdir; my $bindir; my $man1dir; my $man3dir; my $comment; my $perlbin;
-my $version = '1.43';
+my $version = '1.44';
 ($libdir, $bindir, $man1dir, $man3dir) = &defaults();
 
 if (! -t STDIN) {  # not interactive, use defaults ...
@@ -256,13 +256,13 @@ sub check_kit {
 	print STDERR "Checking your kit ... ";
 
 	my %file_sizes = (
-		'README', 1716,
-		'Changes', 611,
+		'README', 1719,
+		'Changes', 797,
 		'MANIFEST', 90,
-		'Tea.pm', 25706,
+		'Tea.pm', 25429,
 		'bin/tea', 3003,
-		'Clui', 31223,
-		'test.pl', 9604,
+		'Clui', 31225,
+		'test.pl', 9573,
 	);
 
 	my $problem_found = 0;

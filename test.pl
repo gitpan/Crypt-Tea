@@ -91,7 +91,7 @@ and paste it into an email to computing@pjb.com.au
 </P>
 <PRE>
 <SCRIPT LANGUAGE="JavaScript"> <!--
-document.write('Crypt::Tea 1.43 on ' + navigator.appName
+document.write('Crypt::Tea 1.44 on ' + navigator.appName
  + ' ' + navigator.appVersion);
 // -->
 </SCRIPT>
@@ -245,12 +245,12 @@ while (1) {
 }
 // -->
 </SCRIPT>
- should be 2408299521, 5951102880, -7643482603, -5549055353,
+ should be -1886667775, 1656135584, 946451989, -1254088057,
 
-xor_blocks((2408299521, 5951102880), (-7643482603, -5549055353))
+xor_blocks((2048299521, 595110280), (-764348263, -554905533))
 <SCRIPT LANGUAGE="JavaScript"> <!--
 var bl1 = new Array(); var bl2 = new Array();
-bl1[0]=2408299521; bl1[1]=5951102880; bl2[0]=-7643482603; bl2[1]=-5549055353;
+bl1[0]=2048299521; bl1[1]=595110280; bl2[0]=-764348263; bl2[1]=-554905533;
 var bl = xor_blocks(bl1,bl2);
 var ibl = 0;  var lbl = bl.length;
 document.write('   returns ');
@@ -261,15 +261,15 @@ while (1) {
 }
 // -->
 </SCRIPT>
- should be -1209923052, -671695577,
+ should be -1469683048, -40601141,
 
-tea_code((2408299521,5951102880),
-  (-7643482603,554905535,6375495627,-2837475461))
+tea_code((2048299521,595110280),
+  (-764348263,554905533,637549562,-283747546))
 <SCRIPT LANGUAGE="JavaScript"> <!--
 var v = new Array(); var key = new Array();
-v[0]=2408299521; v[1]=5951102880;
-key[0]=-7643482603; key[1]=5549055353;
-key[2]=6375495627; key[3]=-2837475461;
+v[0]=2048299521; v[1]=595110280;
+key[0]=-764348263; key[1]=554905533;
+key[2]=637549562; key[3]=-283747546;
 var bl = tea_code(v,key);
 var ibl = 0;  var lbl = bl.length;
 document.write('   returns ');
@@ -280,15 +280,15 @@ while (1) {
 }
 // -->
 </SCRIPT>
- should be 19065888396, -2426038988,
+ should be -451692928, 1589210186,
 
-tea_decode((19065888396,-2426038988),
-  (-7643482603,554905535,6375495627,-2837475461))
+tea_decode((2048299521,595110280),
+  (-764348263,554905533,637549562,-283747546))
 <SCRIPT LANGUAGE="JavaScript"> <!--
 var v = new Array(); var key = new Array();
-v[0]=19065888396; v[1]=-2426038988;
-key[0]=-7643482603; key[1]=5549055353;
-key[2]=6375495627; key[3]=-2837475461;
+v[0]=2048299521; v[1]=595110280;
+key[0]=-764348263; key[1]=554905533;
+key[2]=637549562; key[3]=-283747546;
 var bl = tea_decode(v,key);
 var ibl = 0;  var lbl = bl.length;
 document.write('   returns ');
@@ -299,7 +299,7 @@ while (1) {
 }
 // -->
 </SCRIPT>
- should be 2408299521, 5951102880,
+ should be -257148566, -1681954940,
 
 </PRE>
 
