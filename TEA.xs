@@ -1,5 +1,5 @@
 /*
- * $Id: TEA.xs,v 0.96 2001/03/25 19:26:31 ams Exp $
+ * $Id: TEA.xs,v 0.99 2001/03/28 16:36:13 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -7,30 +7,51 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#include "tea.h"
+
 #ifndef sv_undef
 #define sv_undef PL_sv_undef
 #endif
 
+typedef struct tea * Crypt__TEA;
+
 MODULE = Crypt::TEA     PACKAGE = Crypt::TEA    PREFIX = tea_
 PROTOTYPES: DISABLE
 
-void
-tea_crypt(input, output, ks, rounds, dir)
-    char *  input = NO_INIT
-    SV *    output
-    char *  ks = NO_INIT
+Crypt__TEA
+tea_setup(key, rounds)
+    char *  key    = NO_INIT
     int     rounds
-    int     dir
-    STRLEN  inlen  = NO_INIT
-    STRLEN  outlen = NO_INIT
-    STRLEN  kslen  = NO_INIT
+    STRLEN  keylen = NO_INIT
     CODE:
     {
-        input = SvPV(ST(0), inlen);
+        key = SvPV(ST(0), keylen);
+        if (keylen != 16)
+            croak("key must be 16 bytes long");
+
+        RETVAL = tea_setup((unsigned char *)key, rounds);
+    }
+    OUTPUT:
+        RETVAL
+
+void
+tea_DESTROY(t)
+    Crypt__TEA t
+    CODE: free(t);
+
+void
+tea_crypt(t, input, output, decrypt)
+    Crypt__TEA t
+    char *  input  = NO_INIT
+    SV *    output
+    int     decrypt
+    STRLEN  inlen  = NO_INIT
+    STRLEN  outlen = NO_INIT
+    CODE:
+    {
+        input = SvPV(ST(1), inlen);
         if (inlen != 8)
             croak("input must be 8 bytes long");
-
-        ks = SvPV(ST(2), kslen);
 
         if (output == &sv_undef)
             output = sv_newmortal();
@@ -39,8 +60,10 @@ tea_crypt(input, output, ks, rounds, dir)
         if (!SvUPGRADE(output, SVt_PV))
             croak("cannot use output as lvalue");
 
-        tea_crypt((unsigned char *)input,
-                  (unsigned char *)SvGROW(output, 8), ks, rounds, dir);
+        tea_crypt(t,
+                  (unsigned char *)input,
+                  (unsigned char *)SvGROW(output, outlen),
+                  decrypt);
 
         SvCUR_set(output, outlen);
         *SvEND(output) = '\0';

@@ -1,0 +1,16 @@
+TYPEMAP
+Crypt__TEA	T_TEAPTR
+
+INPUT
+T_TEAPTR
+    if (sv_derived_from($arg, \"${(my $n=$ntype)=~s/__/::/g;\$n}\")) {
+        IV tmp = SvIV((SV *)SvRV($arg));
+        $var   = ($type) tmp;
+    }
+    else
+        croak(\"$var is not of type ${(my $n=$ntype)=~s/__/::/g;\$n}\");
+
+OUTPUT
+T_TEAPTR
+    sv_setref_pv($arg, \"${(my $n=$ntype)=~s/__/::/g;\$n}\",
+                 (void *) $var);

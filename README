@@ -11,17 +11,15 @@ SYNOPSIS
     $plaintext = $tea->decrypt($ciphertext);
 
 DESCRIPTION
-    This module implements TEA encryption, as described
-    by David J. Wheeler and Roger M.  Needham in
+    TEA is a 64-bit symmetric block cipher with a 128-bit key
+    and a variable number of rounds (32 is recommended). It has a
+    low setup time, and depends on a large number of rounds for
+    security, rather than a complex algorithm. It was developed
+    by David J. Wheeler and Roger M. Needham, and is described at
     <http://www.ftp.cl.cam.ac.uk/ftp/papers/djw-rmn/djw-rmn-tea.html>.
 
-    TEA is a 64-bit symmetric block cipher with a 128-bit key and
-    a variable number of rounds (32 is recommended). It has a low
-    setup time, and depends on a large number of rounds for security,
-    rather than a complex algorithm.
-
-    The module supports the Crypt::CBC interface, with the following
-    functions.
+    This module implements TEA encryption. It supports the Crypt::CBC
+    interface, with the following functions.
 
   Functions
 
@@ -32,17 +30,16 @@ DESCRIPTION
         Returns the size (in bytes) of the key (16, in this case).
 
     new($key, $rounds)
-        This creates a new Crypt::TEA object with the specified key
-        (assumed to be of keysize() bytes). The optional rounds
-        parameter specifies the number of rounds of encryption to
-        perform, and defaults to 32.
+        This creates a new Crypt::TEA object with the specified
+        key. The optional rounds parameter specifies the number of
+        rounds of encryption to perform, and defaults to 32.
 
     encrypt($data)
-        Encrypts $data (of blocksize() bytes) and returns the
+        Encrypts blocksize() bytes of $data and returns the
         corresponding ciphertext.
 
     decrypt($data)
-        Decrypts $data (of blocksize() bytes) and returns the
+        Decrypts blocksize() bytes of $data and returns the
         corresponding plaintext.
 
 SEE ALSO
