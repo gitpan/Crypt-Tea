@@ -14,15 +14,20 @@ To install just:
    perl Install
 
 that's all ! or you can still do it the old way ...
-	perl Makefile.PL
-	make
-	make test
-	make install
+   perl Makefile.PL
+   make
+   make test
+   make install
 
 For up-to-date source, see http://www.cpan.org/SITES.html
 and look for the directory authors/id/P/PJ/PJB
 See also http://www.pjb.com.au/comp/tea.html
 
-This is version 2.08.
+This is version 2.09.  It is mature, and apart perhaps from minor bug
+fixes it will probably be the final version of Crypt::Tea.  Future
+developments will take place under the name Crypt::Tea_JS, which will
+use some C for extra speed, and the new version of the TEA algorithm.
+The calling interface will be identical. Backward compatibility for files
+encrypted with this module will be available, but will not be the default.
 
 Peter J Billam            http://www.pjb.com.au/comp/contact.html

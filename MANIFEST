@@ -7,4 +7,3 @@ Makefile.PL
 test.pl
 Tea.pm
 bin/tea
-algorithm/c_tea.c

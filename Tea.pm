@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.08';
+$VERSION = '2.09';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -85,6 +85,8 @@ sub binary2str {
 	return join '', @str;
 }
 sub ascii2str {   my $a = $_[$[]; # converts pseudo-base64 to string of bytes
+	# no warnings;
+	local $^W = 0;
 	$a =~ tr#-A-Za-z0-9+_##cd;
 	my $ia = $[-1;  my $la = length $a;   # BUG not length, final!
 	my $ib = $[;  my @b = ();
@@ -613,7 +615,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string;
 at least 17 random 8-bit bytes for single encryption.
 
-Version 2.08,
+Version 2.09,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -794,15 +796,15 @@ Crypt::TEA; here the encryption is done in pure Perl, all cyphertext is
 ascii-encoded, and notably there is a subroutine to return JavaScript
 code which implements compatible functions. Unfortunately, Microsoft
 operating systems confuse the two names and are unable to install both.
-Therefore, after version 2.xx, further development in Crypt::Tea
-will take place probably under the name Crypt::Tea_JS.
 
-Currently this is vapourware, but candidate additions after the move to
-Crypt::Tea_JS could include Diffie-Hellman negotiation, triple-encryption,
-the use of the newer Tea algorithm
-(which would sacrifice backward-compatibility),
-and more use of C for extra speed
+This version (2.09) is mature, and apart perhaps from minor bug
+fixes it will probably be the final version of Crypt::Tea. Further
+development will take place probably under the name Crypt::Tea_JS.
 
+Crypt::Tea_JS will use some C for extra speed, and will use the new
+version of the TEA algorithm.  The calling interface will be identical.
+Backward compatibility will be available for files encrypted with Crypt::Tea,
+but it will not be the default.
 
 =head1 AUTHOR
 
