@@ -1,3 +1,4 @@
+#! /usr/bin/perl
 #########################################################################
 #        This Perl script is Copyright (c) 2001, Peter J Billam         #
 #               c/o P J B Computing, www.pjb.com.au                     #
@@ -7,7 +8,7 @@
 #########################################################################
 require './Tea.raw';  import Crypt::Tea;
 
-my $text = <<EOT;
+my $text = <<'EOT';
 Hier lieg' ich auf dem Frülingshügel:
 die Wolke wird mein Flügel,
 ein Vogel fliegt mir voraus.
@@ -36,6 +37,23 @@ in goldnen grüner Zweige Dämmerung ?
 Alte, unnennbare Tage !
 EOT
 
+$key1 = &asciidigest ("G $$ ". time);
+$key2 = &asciidigest ("Arghhh... " . time ."Xgloopiegleep $$");
+
+my $p1 = <<EOT;
+<P>If you are reading this paragraph, it has been successfully
+encrypted by <I>Perl</I> and decrypted by <I>JavaScript</I>.
+The password used was "$key1".
+A localised error in the cyphertext will cause about
+16 bytes of binary garbage to appear in the plaintext output.</P>
+EOT
+my $p2 = <<EOT;
+If you are reading this one, it has been successfully
+encrypted by Perl, decrypted by JavaScript,
+and then, using a different password "$key2",
+re-encrypted and re-decrypted by JavaScript.
+EOT
+
 my $d = &asciidigest ($text); 
 if ($d eq '5sO762E_kw3WK++EiHhHiA') {
 	print "asciidigest OK ...\n";
@@ -44,15 +62,34 @@ if ($d eq '5sO762E_kw3WK++EiHhHiA') {
 	exit 1;
 }
 
-$key = &asciidigest ("G $$ ". time);
-my $c = &encrypt ($text, $key); 
-my $p = &decrypt ($c, $key);
+my $c = &encrypt ($text, $key1); 
+my $p = &decrypt ($c, $key1);
 if ($p eq $text) {
 	print "encrypt and decrypt OK ...\n";
 } else {
 	print "ERROR: encrypt and decrypt failed: encrypt was\n$c\n";
 	exit 1;
 }
+
+if (! open (F, '>test.html')) { die "Sorry, can't open test.html: $!\n"; }
+$ENV{REMOTE_ADDR} = '123.321.123.321';  # simulate CGI context
+$c1 = &encrypt ($p1, $key1); 
+$c2 = &encrypt ($p2, $key1); 
+print F "<HTML><HEAD><TITLE>test.html</TITLE>\n", &tea_in_javascript(), <<EOT;
+</HEAD><BODY><HR>
+<SCRIPT LANGUAGE="JavaScript"> <!--
+document.write(decrypt('$c1','$key1'));
+var c2 = encrypt(decrypt('$c2','$key1'),'$key2');
+document.write('<P><CODE>' + c2 + '</CODE></P>\\n');
+document.write('<P><CODE>' + decrypt(c2,'$key2') + '</CODE></P>\\n');
+// -->
+</SCRIPT>
+<HR></BODY></HTML>
+EOT
+close F;
+
+warn "Now use a JavaScript-capable browser to view test.html . . .\n";
+
 exit 0;
 
 __END__
@@ -65,6 +102,7 @@ test - Perl script to test Crypt::Tea.pm
 =head1 SYNOPSIS
 
   make test
+  netscape file:test.html
 
 =head1 DESCRIPTION
 

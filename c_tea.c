@@ -24,14 +24,11 @@ encrypt () {
 decrypt () {
 }
 
-tea_code(long* v, long* k)  {           /* long is 4 bytes. */
+tea_code(long* v, long* k)  {   /* long is 4 bytes. */
    unsigned long v0=v[0], v1=v[1], k0=k[0], k1=k[1], k2=k[2], k3=k[3],
 		sum=0, delta=0x9e3779b9, n=32 ;
    while (n-- > 0) {
       sum += delta ;
-if (n > 22) {
-printf ("  code: n = %d  sum = %x  v0 = %x  v1 = %x\n", n, sum, v0, v1);
-}
       v0 += (v1<<4)+k0 ^ v1+sum ^ (v1>>5)+k1 ;
       v1 += (v0<<4)+k2 ^ v0+sum ^ (v0>>5)+k3 ;
    }
