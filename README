@@ -21,25 +21,8 @@ that's all ! or you can still do it the old way ...
 
 For up-to-date source, see http://www.cpan.org/SITES.html
 and look for the directory authors/id/P/PJ/PJB
+See also http://www.pjb.com.au/comp/tea.html
 
-This is version 2.06.
-
-Version 1.45 will probably be the final version in the 1.xx branch.
-It is stable, and fully compatible with earlier versions.
-Unfortunately, the '+' character used in the ascii-encoding is a reserved
-character in the query part of URLs; therefore versions 2.xx switches
-to using '-' instead. Versions 2.xx will decrypt files encrypted by 1.xx,
-and version 1.45 will decrypt files encrypted by versions 2.xx. However,
-the digest (signature) functions of 1.xx and 2.xx will differ in their
-use of '+' and '-' characters respectively.
-
-Crypt::Tea can conflict with a similarly-named Crypt::TEA by Abhijit
-Menon-Sen.  The functionality of Crypt::Tea is different from Abhijit's
-Crypt::TEA; here the encryption is done in pure Perl, all cyphertext is
-ascii-encoded, and notably there is a subroutine to return JavaScript
-code which implements compatible functions. Unfortunately, Microsoft
-operating systems confuse the two names and are unable to install both.
-Therefore, after version 2.xx, further development in Crypt::Tea
-will take place under the name Crypt::Tea_PPJS.
+This is version 2.07.
 
 Peter J Billam            http://www.pjb.com.au/comp/contact.html

@@ -11,7 +11,7 @@
 20020917 1.43 JS portability bug fixed in ascii2bytes, a[i] to a.charAt(i)
 20020919 1.44 JS portability bug fixed in specifying 32-bit integers
 20030701 FreeBSD bug corrected ($^O now gives freebsd)
-20030901 Tea.pm pjb removed octal number literals from the JS
+20030901 eliminate octal number literals from the JS
 20040224 Crypt::Tea is now also named Crypt::Tea_PPJS, q.v.
 20040809 'perl Install' works better on solaris without Term::Size
 20040922 1.45 + changed to - to avoid URL-encoding, with backward compatibility
@@ -22,3 +22,4 @@
 20041127 2.04 consistentised Term::Clui in Install
 20041218 2.05 documentation of the JS end of FORM submission
 20041221 2.06 more doc adjustments, added examples/tea_demo.cgi
+20041223 2.07 eliminate octals from JS strings, for ECMAscript-3

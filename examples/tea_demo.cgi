@@ -45,13 +45,15 @@ C will discuss this with you.</P>
 <TR><TH>Date   </TH><TD><INPUT TYPE="text" NAME="date">   </TD></TR>
 <TR><TH>Comment</TH><TD><INPUT TYPE="text" NAME="comment"></TD></TR>
 </TABLE>
-<INPUT TYPE="submit" NAME="File Report">
+<INPUT TYPE="submit" VALUE="File Report">
 </FORM>
 
 EOT
 	print &tea_in_javascript();
-	print "Welcome $username . . . (Hint: your password is <I>$key</I>)\n";
+	print "<P>Welcome $username . . . (Hint: your password is <I>$key</I>)\n";
 	print <<'EOT';
+<BR>Security reminder: you can audit the code that you are about to run
+if you <I>View</I> the <I>Source</I> of this page&nbsp;.&nbsp;.&nbsp;.</P>
 <SCRIPT LANGUAGE="JavaScript"> <!--
 var key = prompt("Password ?","");
 function submitter(form) {
