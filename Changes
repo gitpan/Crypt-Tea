@@ -20,3 +20,5 @@
 20041005 2.02 test.pl displays correct version
 20041011 2.03 JS tea_code and tea_decode now work on Konqueror5.0
 20041127 2.04 consistentised Term::Clui in Install
+20041218 2.05 documentation of the JS end of FORM submission
+20041221 2.06 more doc adjustments, added examples/tea_demo.cgi

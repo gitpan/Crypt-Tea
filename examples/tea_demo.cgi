@@ -11,33 +11,28 @@ use Crypt::Tea;
 my $username = 'james';
 my $key      = 'bond';
 
-# extract the FORM data ...
-my ($request_method, $query_string, @key_value_pairs, %DAT);
-$request_method = $ENV{'REQUEST_METHOD'};
-if ($request_method eq 'GET') {
-	$query_string = $ENV{'QUERY_STRING'};
-} elsif ($request_method eq 'POST') {
-	read (STDIN, $query_string, $ENV{'CONTENT_LENGTH'});
-} else {
-	&header('Sorry . . .'); &sorry("Unknown request method $request_method");
-}
-@key_value_pairs = split (/&/, $query_string);
-foreach $key_value (@key_value_pairs) {
-	my ($k, $v) = split (/=/, $key_value); $v =~ tr/+/ /;
-	$v =~ s/%([\dA-Fa-f][\dA-Fa-f])/pack ("C", hex($1))/eg;
-	if (! defined($DAT{$k})) { $DAT{$k} = $v;
-	} else { $DAT{$k} = join ("\0", $DAT{$k}, $v);
+my %DAT; {   # extract the FORM data ...
+	my ($RM, $QS); $RM = $ENV{REQUEST_METHOD};
+	if ($RM eq 'POST') { read (STDIN, $QS, $ENV{CONTENT_LENGTH});
+	} elsif ($RM eq 'GET') { $QS = $ENV{QUERY_STRING};
+	} else { &header('Sorry . . .'); &sorry("Unknown request method $RM");
+	}
+	foreach (split (/&/, $QS)) {
+		my ($k, $v) = split (/=/, $_); $v =~ tr/+/ /;
+		$v =~ s/%([\dA-Fa-f][\dA-Fa-f])/pack ("C", hex($1))/eg;
+		if (! defined($DAT{$k})) { $DAT{$k}=$v; } else { $DAT{$k}.="\0$v"; }
 	}
 }
 #-----------------------------------------------------------------------
 
-&header($ENV{SCRIPT_NAME});
+&header("Crypt::Tea Demo...");
 
 if (! $DAT{cyphertext}) {
-	my $cyphertext = &encrypt ( <<EOT , $key );
-<P>Latest gossip: Fred Bloggs seems OK, but don't trust his sister
-Gina, don't know who she's working for; could be unwitting.<BR>
-Also, AH may have been sprung - be circumspect.</P>
+	my $our_cyphertext = &encrypt ( <<EOT , $key );
+<P>Latest gossip: the young Miss Briss seems OK, but don't trust her
+brother Hugh; we don't know who he's working for, could be unwitting.
+Also, AH may have been sprung - be circumspect.
+C will discuss this with you.</P>
 
 <FORM NAME="covert" ACTION="$ENV{SCRIPT_NAME}" METHOD="post">
 <INPUT TYPE="hidden" NAME="username" VALUE="$username">
@@ -71,7 +66,7 @@ function submitter(form) {
 }
 EOT
 	print <<EOT;
- document.write(decrypt("$cyphertext", key));
+ document.write(decrypt("$our_cyphertext", key));
 // -->
 </SCRIPT>
 EOT
@@ -79,11 +74,18 @@ EOT
 } else {   # we have some cyphertext :-)
 	my @contents = split ("\f", decrypt($DAT{cyphertext}, $key));
 
-	my $new_plaintext = "$username, you submitted the following report<BR>\n";
+	my $new_plaintext =
+	"<P>$username, you submitted the following report:</P>\n";
    while (1) {
 		my $k = shift @contents; my $v = shift @contents; last unless $k;
-		$new_plaintext .= "$k: $v<BR>\n";
+		$new_plaintext .= "<B>$k</B> : $v<BR>\n";
 	}
+	$new_plaintext .= <<'EOT';
+<P>Security reminder : remember to <I>leave this screen</I>,
+and then <I>clear the browser cache !</I></P>
+<P>See also <A HREF="http://www.pjb.com.au/comp/tea.html">
+www.pjb.com.au/comp/tea.html</A></P>
+EOT
 
 	my $new_cyphertext = &encrypt ($new_plaintext, $key);
 	print &tea_in_javascript(), <<EOT;
@@ -99,7 +101,7 @@ EOT
 &footer(); exit 0;
 
 #-----------------------------------------------------------------------
-sub header { my $title = $_[$[] || $ENV{'SCRIPT_NAME'};
+sub header { my $title = $_[$[] || $ENV{SCRIPT_NAME};
 	print <<EOT;
 Content-type: text/html
 
