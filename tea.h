@@ -1,15 +1,13 @@
 /*
- * $Id: tea.h,v 1.10 2001/05/04 07:55:01 ams Exp $
+ * $Id: tea.h,v 1.22 2001/05/07 07:07:38 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
 #include <stdlib.h>
+#include "platform.h"
 
-#ifdef WIN32
-typedef unsigned long uint32_t;
-#else
-#include <inttypes.h>
-#endif
+#ifndef _TEA_H_
+#define _TEA_H_
 
 struct tea {
     int rounds;
@@ -17,6 +15,9 @@ struct tea {
 };
 
 struct tea *tea_setup(unsigned char *key, int rounds);
+void tea_free(struct tea *self);
 void tea_crypt(struct tea *self,
                unsigned char *input, unsigned char *output,
                int decrypt);
+
+#endif

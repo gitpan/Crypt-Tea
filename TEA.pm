@@ -1,4 +1,4 @@
-# $Id: TEA.pm,v 1.10 2001/05/04 07:55:01 ams Exp $
+# $Id: TEA.pm,v 1.22 2001/05/07 07:07:38 ams Exp $
 # Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
 
 package Crypt::TEA;
@@ -9,7 +9,7 @@ use DynaLoader;
 use vars qw( @ISA $VERSION );
 
 @ISA = qw( DynaLoader );
-($VERSION) = q$Revision: 1.10 $ =~ /([\d.]+)/;
+($VERSION) = q$Revision: 1.22 $ =~ /([\d.]+)/;
 
 bootstrap Crypt::TEA $VERSION;
 
@@ -110,11 +110,19 @@ Crypt::CBC, Crypt::Blowfish, Crypt::DES
 
 =over 4
 
-=item Dave Paris, for taking the time to discuss and review the initial
-version of this module, making several useful suggestions, and
-contributing tests.
+=item Dave Paris
 
-=item Mike Blazer and Gil Cohen, for testing under Windows.
+For taking the time to discuss and review the initial version of this
+module, making several useful suggestions, and contributing tests.
+
+=item Mike Blazer and Gil Cohen
+
+For testing under Windows.
+
+=item Tony Cook
+
+For making the module work under Activeperl, testing on several
+platforms, and suggesting that I probe for features via %Config.
 
 =back
 

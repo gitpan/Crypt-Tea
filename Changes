@@ -1,3 +1,9 @@
+1.22    2001-05-07
+
+    * Makefile.PL now tries to do the right thing on systems which don't
+      have <inttypes.h>.
+    * This release should work under Activeperl (thanks to Tony Cook).
+
 1.10    2001-05-04
 
     * The module (with minor updates) is now distributed under the
@@ -8,6 +14,6 @@
     * This release should build cleanly under Win32. It still crashes
       under Activeperl; Any help with this problem would be appreciated.
 
-1.00    2001-03-30
+1.00    2001-03-30  (By Abhijit Menon-Sen <ams@wiw.org>)
 
     * First stable release.

@@ -4,11 +4,11 @@ NAME
 SYNOPSIS
     use Crypt::TEA;
 
-    $tea = Crypt::TEA->new($key);
+    $cipher = Crypt::TEA->new($key);
 
-    $ciphertext = $tea->encrypt($plaintext);
+    $ciphertext = $cipher->encrypt($plaintext);
 
-    $plaintext = $tea->decrypt($ciphertext);
+    $plaintext = $cipher->decrypt($ciphertext);
 
 DESCRIPTION
     TEA is a 64-bit symmetric block cipher with a 128-bit key
@@ -48,16 +48,23 @@ SEE ALSO
     Crypt::CBC, Crypt::Blowfish, Crypt::DES
 
 ACKNOWLEDGEMENTS
-    Dave Paris, for taking the time to discuss and review the initial
-    version of this module, making several useful suggestions,
-    and contributing tests.
-    
-    Mike Blazer and Gil Cohen, for testing under Windows.
+    Dave Paris
+        For taking the time to discuss and review the initial
+        version of this module, making several useful suggestions,
+        and contributing tests.
+
+    Mike Blazer and Gil Cohen
+        For testing under Windows.
+
+    Tony Cook
+        For making the module work under Activeperl, testing on
+        several platforms, and suggesting that I probe for features
+        via %Config.
 
 AUTHOR
     Abhijit Menon-Sen <ams@wiw.org>
 
     Copyright 2001 Abhijit Menon-Sen. All rights reserved.
 
-    This software is distributed under the terms of the Artistic License
-    <URL:http://ams.wiw.org/code/artistic.txt>.
+    This software is distributed under the terms of the Artistic
+    License <URL:http://ams.wiw.org/code/artistic.txt>.

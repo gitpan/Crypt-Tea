@@ -1,5 +1,5 @@
 /*
- * $Id: TEA.xs,v 1.10 2001/05/04 07:55:01 ams Exp $
+ * $Id: TEA.xs,v 1.22 2001/05/07 07:07:38 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -35,7 +35,7 @@ void
 tea_DESTROY(self)
     Crypt::TEA self
     CODE:
-        free(self);
+        tea_free(self);
 
 void
 tea_crypt(self, input, output, decrypt)

@@ -1,5 +1,5 @@
 /*
- * $Id: _tea.c,v 1.10 2001/05/04 07:55:01 ams Exp $
+ * $Id: _tea.c,v 1.22 2001/05/07 07:07:38 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -37,6 +37,11 @@ struct tea *tea_setup(unsigned char *key, int rounds)
     }
 
     return self;
+}
+
+void tea_free(struct tea *self)
+{
+    free(self);
 }
 
 void tea_crypt(struct tea *self,
