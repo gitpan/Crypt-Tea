@@ -1,0 +1,60 @@
+NAME
+    Crypt::TEA - Tiny Encryption Algorithm
+
+SYNOPSIS
+    use Crypt::TEA;
+
+    $tea = Crypt::TEA->new($key);
+
+    $ciphertext = $tea->encrypt($plaintext);
+
+    $plaintext = $tea->decrypt($ciphertext);
+
+DESCRIPTION
+    This module implements TEA encryption, as described in
+    <http://www.ftp.cl.cam.ac.uk/ftp/papers/djw-rmn/djw-rmn-tea.html>.
+
+    TEA is an extremely simple and fast symmetric cipher with low setup
+    time. It depends on a large number of iterations rather than a
+    complex algorithm for security.
+
+    The module supports the Crypt::CBC interface, with the following
+    functions.
+
+  Functions
+
+    blocksize
+        Returns the size (in bytes) of the block.
+
+    keysize
+        Returns the size (in bytes) of the key.
+
+    new($key, $rounds)
+        This creates a new Crypt::TEA object with the specified key
+        (assumed to be of keysize() bytes). The optional rounds
+        parameter specifies the number of rounds of encryption to
+        perform, and defaults to 32.
+
+    encrypt($data)
+        Encrypts $data (of blocksize() bytes) and returns the
+        corresponding ciphertext.
+
+    decrypt($data)
+        Decrypts $data (of blocksize() bytes) and returns the
+        corresponding plaintext.
+
+SEE ALSO
+    Crypt::CBC, Crypt::Blowfish, Crypt::DES
+
+ACKNOWLEDGEMENTS
+    Dave Paris, for taking the time to discuss and review the initial
+    version of this module, making several useful suggestions, and
+    contributing tests.
+
+AUTHOR
+    Abhijit Menon-Sen <ams@wiw.org>
+
+    Copyright 2001 Abhijit Menon-Sen. All rights reserved.
+
+    This is free software; you may redistribute and/or modify it under
+    the same terms as Perl itself.
