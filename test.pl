@@ -41,17 +41,17 @@ $key1 = &asciidigest ("G $$ ". time);
 $key2 = &asciidigest ("Arghhh... " . time ."Xgloopiegleep $$");
 
 my $p1 = <<EOT;
-<P>If you are reading this paragraph, it has been successfully
+If you are reading this paragraph, it has been successfully
 encrypted by <I>Perl</I> and decrypted by <I>JavaScript</I>.
 The password used was "$key1".
 A localised error in the cyphertext will cause about
-16 bytes of binary garbage to appear in the plaintext output.</P>
+16 bytes of binary garbage to appear in the plaintext output.
 EOT
 my $p2 = <<EOT;
-If you are reading this one, it has been successfully
-encrypted by Perl, decrypted by JavaScript,
+And if you are reading this one, it has been successfully
+encrypted by <I>Perl</I>, decrypted by <I>JavaScript</I>,
 and then, using a different password "$key2",
-re-encrypted and re-decrypted by JavaScript.
+re-encrypted and re-decrypted by <I>JavaScript</I>.
 EOT
 
 my $d = &asciidigest ($text); 
@@ -68,6 +68,14 @@ if ($p eq $text) {
 	print "encrypt and decrypt OK ...\n";
 } else {
 	print "ERROR: encrypt and decrypt failed: encrypt was\n$c\n";
+	exit 1;
+}
+$c =~ tr/+/-/;
+$p = &decrypt ($c, $key1);
+if ($p eq $text) {
+	print "version2-compatible decrypt OK ...\n";
+} else {
+	print "ERROR: version2-compatible decrypt failed: encrypt was\n$c\n";
 	exit 1;
 }
 
@@ -87,11 +95,12 @@ This page is a test of the JavaScript side of
 <P>If any of these functions do not return what they should,
 please use your mouse to cut-and-paste all the bit in
 <CODE>constant-width</CODE> font,
-and paste it into an email to computing@pjb.com.au
+and paste it into an email to
+<A HREF="http://www.pjb.com.au/comp/contact.html">Peter Billam</A>
 </P>
 <PRE>
 <SCRIPT LANGUAGE="JavaScript"> <!--
-document.write('Crypt::Tea 1.44 on ' + navigator.appName
+document.write('Crypt::Tea 1.45 on ' + navigator.appName
  + ' ' + navigator.appVersion);
 // -->
 </SCRIPT>
@@ -333,7 +342,7 @@ __END__
 
 =head1 NAME
 
-test - Perl script to test Crypt::Tea.pm
+test.pl - Perl script to test Crypt::Tea.pm
 
 =head1 SYNOPSIS
 
@@ -346,11 +355,11 @@ This tests the Crypt::Tea.pm module.
 
 =head1 AUTHOR
 
-Peter J Billam <computing@pjb.com.au>
+Peter J Billam  http://www.pjb.com.au/comp/contact.html
 
 =head1 SEE ALSO
 
-http://www.pjb.com.au/, http://www.cpan.org, perl(1).
+http://www.pjb.com.au/ http://www.cpan.org perl(1).
 
 =cut
 

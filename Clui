@@ -166,9 +166,7 @@ sub check_size {
 	if (! $size_changed) { return; }
 	if ($must_use_tput) {
 		$maxcols = `tput cols`;
-		if ($^O eq 'linux') { $maxrows = (`tput lines` + 0);
-		} else { $maxrows = (`tput rows` + 0);
-		}
+		$maxrows = (`tput lines` + 0) || (`tput rows` + 0);
 	} else {
 		($maxcols, $maxrows) = &Term::Size::chars(*STDERR);
 	}

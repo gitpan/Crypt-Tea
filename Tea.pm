@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '1.44';
+$VERSION = '1.45';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -43,6 +43,7 @@ my %a2b = (
 	'4'=>070,'5'=>071,'6'=>072,'7'=>073,'8'=>074,'9'=>075,'+'=>076,'_'=>077,
 );
 my %b2a = reverse %a2b;
+$a2b{'-'}=076;
 # end config
 
 # ------------------ infrastructure ...
@@ -83,7 +84,7 @@ sub binary2str {
 	return join '', @str;
 }
 sub ascii2str {   my $a = $_[$[]; # converts pseudo-base64 to string of bytes
-	$a =~ tr#A-Za-z0-9+_##cd;
+	$a =~ tr#-A-Za-z0-9+_##cd;
 	my $ia = $[-1;  my $la = length $a;   # BUG not length, final!
 	my $ib = $[;  my @b = ();
 	my $carry;
@@ -597,8 +598,8 @@ Usage:
 In CGI scripts:
 
 	use Crypt::Tea;
-	print &tea_in_javascript;  # now the browser can encrypt
-	# and decrypt ! see CGI::Htauth.pm for examples ...
+	print &tea_in_javascript;  # now the browser can
+	# encrypt and decrypt ! see below for examples ...
 
 =head1 DESCRIPTION
 
@@ -608,10 +609,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-As of version 1.34, various Htauth-specific hook routines
-have now been moved out into the I<CGI::Htauth.pm> module.
-
-Version 1.44,
+Version 1.45,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -647,10 +645,75 @@ for use in CGI scripts to communicate with browsers.
 
 =back
 
+=head1 JAVASCRIPT
+
+Of course the same Key must be used by the Perl on the server
+and by the JavaScript in the browser, and of course you don't
+want to transmit the Key in cleartext between them.
+Let's assume you've already asked the user to fill in a form
+asking for their Username.  This username can be transmitted
+back and forth in cleartext as an ordinary form variable.
+
+On the server, typically you will retrieve the Key from a
+database of some sort, for example:
+
+ dbmopen %keys, '/home/wherever/passwords';
+ $key = $keys{$username};
+ dbmclose %keys;
+ $ciphertext = &encrypt ($plaintext, $key);
+
+At the browser end there are various ways of doing it.
+Easiest is to ask the user for their password every time
+they submit a form or view an encrypted page.
+
+ print <<EOT;
+ <SCRIPT LANGUAGE="JavaScript"> <!--
+ key = prompt("Password ?","");
+ document.write(decrypt("$ciphertext", key));
+ // -->
+ </SCRIPT>
+ EOT
+
+If you want the browser to remember its key from page to page,
+to form a session, then things get harder.
+If you store the Key in a Cookie, then it is vulnerable to
+any imposter server who imitates your IP address,
+and also to anyone who sits down at the user's computer.
+
+The alternative is to store the Key in a JavaScript variable,
+but unfortunately all JavaScript variables get anihilated when
+you load a new page into the same target frame.
+Therefore you have to store the Key in a JavaScript variable
+in a frameset, open up a subframe covering almost all the screen,
+and load the subsequent pages into that subframe;
+they can then use I<parent.key> to encrypt and decrypt.
+See CGI::Htauth.pm for attempts to use this kind of technique.
+
+=head1 ROADMAP
+
+This is version 1.45, and will probably be the final version in the 1.xx
+branch.  It is stable, and fully compatibility with earlier versions.
+Unfortunately, the '+' character used in the ascii-encoding is a reserved
+character in the query part of URLs; therefore versions 2.xx will switch
+to using '-' instead. Versions 2.xx will decrypt files encrypted by 1.xx,
+and version 1.45 will decrypt files encrypted by versions 2.xx. However,
+the digest (signature) functions of 1.xx and 2.xx will differ in their
+use of '+' and '-' characters respectively.
+
+Crypt::Tea can conflict with a similarly-named Crypt::TEA by Abhijit
+Menon-Sen.  The functionality of Crypt::Tea is different from Abhijit's
+Crypt::TEA; here the encryption is done in pure Perl, all cyphertext is
+ascii-encoded, and notably there is a subroutine to return JavaScript
+code which implements compatible functions. Unfortunately, Microsoft
+operating systems confuse the two names and are unable to install both.
+Therefore, after version 2.xx, further development in Crypt::Tea
+will take place under the name Crypt::Tea_PPJS.
+
 =head1 AUTHOR
 
-Peter J Billam <peter@pjb.com.au>,
-with thanks also to Neil Watkiss for MakeMaker packaging.
+Peter J Billam ( http://www.pjb.com.au/comp/contact.html ).
+Thanks also to Neil Watkiss for the MakeMaker packaging, and to
+Scott Harrison for suggesting workarounds for MacOS 10.2 browsers.
 
 =head1 CREDITS
 
@@ -661,7 +724,7 @@ as regards the modes of use.
 
 =head1 SEE ALSO
 
-http://www.pjb.com.au/, CGI::Htauth.pm, perl(1).
+http://www.pjb.com.au/comp, CGI::Htauth.pm, tea(1), perl(1).
 
 =cut
 

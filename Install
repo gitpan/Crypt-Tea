@@ -5,7 +5,7 @@ use Config;
 &check_kit;
 
 my $libdir; my $bindir; my $man1dir; my $man3dir; my $comment; my $perlbin;
-my $version = '1.44';
+my $version = '1.45';
 ($libdir, $bindir, $man1dir, $man3dir) = &defaults();
 
 if (! -t STDIN) {  # not interactive, use defaults ...
@@ -15,8 +15,8 @@ if (! -t STDIN) {  # not interactive, use defaults ...
 }
 
 if ($libdir) {
-	my $choice = &choose('Installing ...', 'interactively',
-	'using system default locations', 'Cancel');
+	my $choice = &choose('Installing ...',
+	'using system default locations', 'interactively', 'Cancel');
 	if ($choice eq 'Cancel') { exit 0; }
 	if ($choice eq 'using system default locations') {
 		if (! $libdir) { die "Sorry, can't write to $libdir\n"; }
@@ -256,13 +256,13 @@ sub check_kit {
 	print STDERR "Checking your kit ... ";
 
 	my %file_sizes = (
-		'README', 1719,
-		'Changes', 797,
+		'README', 1917,
+		'Changes', 1004,
 		'MANIFEST', 90,
-		'Tea.pm', 25429,
-		'bin/tea', 3003,
-		'Clui', 31225,
-		'test.pl', 9573,
+		'Tea.pm', 28194,
+		'bin/tea', 3079,
+		'Clui', 31179,
+		'test.pl', 9855,
 	);
 
 	my $problem_found = 0;

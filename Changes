@@ -12,3 +12,6 @@
 20020919 1.44 JS portability bug fixed in specifying 32-bit integers
 20030701 FreeBSD bug corrected ($^O now gives freebsd)
 20030901 Tea.pm pjb removed octal number literals from the JS
+20040224 Crypt::Tea is now also named Crypt::Tea_PPJS, q.v.
+20040809 'perl Install' works better on solaris without Term::Size
+20040922 1.45 + changed to - to avoid URL-encoding, with backward compatibility

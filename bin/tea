@@ -22,7 +22,7 @@ usage:
 
 For encryption and decryption, you will be asked for a password.
 It should be a sufficiently longish string; say 17 random 8-bit bytes.
-Version 1.44,
+Version 1.45,
 #COMMENT#
 
 EOT
@@ -64,6 +64,7 @@ tea - Perl script to give command-line access to Crypt::Tea.pm
   tea -s filename   # calculates ascii digital signature for filename
   tea -j            # outputs JavaScript doing compatible encryption
   tea -h            # prints this message
+  ps axww | tea -s  # have the best password in town !
 
 For encryption and decryption, you will be asked for a password.
 It should be a sufficiently longish string; say 17 random 8-bit bytes.
@@ -80,12 +81,12 @@ JavaScript code which offers identical functions in JS, and this can
 be used by GCIs to feed to the browser.  Triple encryption will be
 offered later.
 
-Version 1.44,
+Version 1.45,
 #COMMENT#
 
 =head1 AUTHOR
 
-Peter J Billam <computing@pjb.com.au>
+Peter J Billam ( http://www.pjb.com.au/comp/contact.html )
 
 =head1 CREDITS
 

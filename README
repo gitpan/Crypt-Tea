@@ -1,5 +1,5 @@
 
-                       Crypt::Tea.pm
+                         Crypt::Tea.pm
 
 This module implements TEA, the Tiny Encryption Algorithm, and some
 Modes of Use based on CBC, compatibly in both Perl and JavaScript.
@@ -7,14 +7,11 @@ This enables CGI scripts to communicate with browsers.
 
 Subroutines offer encryption, decryption & digest, and all cyphertext
 is ascii-encoded to prevent munging. Another routine returns JavaScript
-code which offers identical functions in JS, and this will be used by
-GCIs to feed to the browser. A wrapper executable 'tea' is included for
-command-line use. Triple encryption will be offered later. Tea.pm is
-used by the CGI::Htauth.pm authentication and encryption module ...
+code with identical functions, and this can be used by GCIs to feed to
+a browser. A wrapper executable 'tea' is included for command-line use.
 
-To install ( cool ! new ! interactive ! ) just:
+To install just:
    perl Install
-(but this doesn't yet work yet under Windows)
 
 that's all ! or you can still do it the old way ...
 	perl Makefile.PL
@@ -25,15 +22,22 @@ that's all ! or you can still do it the old way ...
 For up-to-date source, see http://www.cpan.org/SITES.html
 and look for the directory authors/id/P/PJ/PJB
 
-There is a similarly-named module Crypt::TEA.pm by Abhijit Menon-Sen.
-The functionality of this Tea.pm is quite different from Abhijit's
-TEA.pm; the encryption is done in pure Perl, all cyphertext is ascii-
-encoded, and notably there is a subroutine to return JavaScript code
-which implements compatible functions in JavaScript.  I wrote Tea.pm
-to give me an encryption engine which I could drop into both ends of
-an http connection, in Perl at the CGI end and in JavaScript at the
-browser end.  Abhijit's TEA.pm is written in C, and uses the further
-Crypt::CBC CPAN module; it will run faster, and provides identically
-strong encryption, but will not encrypt an http connection.
+This is version 1.45, and will probably be the final version in the 1.xx
+branch.  It is stable, and fully compatibility with earlier versions.
+Unfortunately, the '+' character used in the ascii-encoding is a reserved
+character in the query part of URLs; therefore versions 2.xx will switch
+to using '-' instead. Versions 2.xx will decrypt files encrypted by 1.xx,
+and version 1.45 will decrypt files encrypted by versions 2.xx. However,
+the digest (signature) functions of 1.xx and 2.xx will differ in their
+use of '+' and '-' characters respectively.
 
-Peter J Billam    peter.billam@pjb.com.au    http://www.pjb.com.au
+Crypt::Tea can conflict with a similarly-named Crypt::TEA by Abhijit
+Menon-Sen.  The functionality of Crypt::Tea is different from Abhijit's
+Crypt::TEA; here the encryption is done in pure Perl, all cyphertext is
+ascii-encoded, and notably there is a subroutine to return JavaScript
+code which implements compatible functions. Unfortunately, Microsoft
+operating systems confuse the two names and are unable to install both.
+Therefore, after version 2.xx, further development in Crypt::Tea
+will take place under the name Crypt::Tea_PPJS.
+
+Peter J Billam            http://www.pjb.com.au/comp/contact.html
