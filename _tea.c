@@ -1,5 +1,5 @@
 /*
- * $Id: _tea.c,v 0.92 2001/03/21 09:49:21 ams Exp $
+ * $Id: _tea.c,v 0.96 2001/03/25 19:26:31 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -15,7 +15,11 @@
                     *c++ = (unsigned char)(l >> 16 & 0xff), \
                     *c++ = (unsigned char)(l >> 24 & 0xff))
 
-/* Based on code by David J. Wheeler and Roger M. Needham, at
+/* TEA is a 64-bit symmetric block cipher with a 128-bit key, developed
+   by David J. Wheeler and Roger M. Needham, and described in their
+   paper at <URL:http://www.cl.cam.ac.uk/ftp/users/djw3/tea.ps>.
+
+   This implementation is based on their code in
    <URL:http://www.cl.cam.ac.uk/ftp/users/djw3/xtea.ps> */
 
 void tea_crypt(unsigned char *input, unsigned char *output,

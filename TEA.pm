@@ -1,4 +1,4 @@
-# $Id: TEA.pm,v 0.92 2001/03/21 09:49:21 ams Exp $
+# $Id: TEA.pm,v 0.96 2001/03/25 19:26:31 ams Exp $
 # Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
 
 package Crypt::TEA;
@@ -9,7 +9,7 @@ use DynaLoader;
 use vars qw( @ISA $VERSION );
 
 @ISA = qw( DynaLoader );
-($VERSION) = q$Revision: 0.92 $ =~ /(\d+\.\d+)/;
+($VERSION) = q$Revision: 0.96 $ =~ /(\d+\.\d+)/;
 
 bootstrap Crypt::TEA $VERSION;
 
@@ -61,12 +61,14 @@ $plaintext  = $tea->decrypt($ciphertext);
 
 =head1 DESCRIPTION
 
-This module implements TEA encryption, as described in
+This module implements TEA encryption, as described by David J. Wheeler
+and Roger M. Needham in
 <http://www.ftp.cl.cam.ac.uk/ftp/papers/djw-rmn/djw-rmn-tea.html>.
 
-TEA is an extremely simple and fast symmetric cipher with low setup
-time. It depends on a large number of iterations rather than a complex
-algorithm for security. 
+TEA is a 64-bit symmetric block cipher with a 128-bit key and a variable
+number of rounds (32 is recommended). It has a low setup time, and
+depends on a large number of rounds for security, rather than a complex
+algorithm.
 
 The module supports the Crypt::CBC interface, with the following
 functions.
@@ -77,11 +79,11 @@ functions.
 
 =item blocksize
 
-Returns the size (in bytes) of the block.
+Returns the size (in bytes) of the block (8, in this case).
 
 =item keysize
 
-Returns the size (in bytes) of the key.
+Returns the size (in bytes) of the key (16, in this case).
 
 =item new($key, $rounds)
 
@@ -103,6 +105,8 @@ plaintext.
 
 =head1 SEE ALSO
 
+<http://www.vader.brad.ac.uk/tea/tea.shtml>
+
 Crypt::CBC, Crypt::Blowfish, Crypt::DES
 
 =head1 ACKNOWLEDGEMENTS
@@ -121,5 +125,5 @@ Abhijit Menon-Sen <ams@wiw.org>
 
 Copyright 2001 Abhijit Menon-Sen. All rights reserved.
 
-This is free software; you may redistribute and/or modify it under the same
-terms as Perl itself.
+This is free software; you may redistribute and/or modify it under the
+same terms as Perl itself.

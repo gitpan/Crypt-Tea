@@ -4,5 +4,4 @@ README
 TEA.pm
 TEA.xs
 _tea.c
-tea.h
 test.pl
