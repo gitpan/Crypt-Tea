@@ -49,8 +49,10 @@ SEE ALSO
 
 ACKNOWLEDGEMENTS
     Dave Paris, for taking the time to discuss and review the initial
-    version of this module, making several useful suggestions, and
-    contributing tests.
+    version of this module, making several useful suggestions,
+    and contributing tests.
+    
+    Mike Blazer and Gil Cohen, for testing under Windows.
 
 AUTHOR
     Abhijit Menon-Sen <ams@wiw.org>

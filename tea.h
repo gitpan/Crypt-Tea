@@ -1,10 +1,15 @@
 /*
- * $Id: tea.h,v 1.01 2001/03/30 17:24:15 ams Exp $
+ * $Id: tea.h,v 1.07 2001/04/19 07:01:32 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
-#include <inttypes.h>
 #include <stdlib.h>
+
+#ifdef WIN32
+typedef unsigned long uint32_t;
+#else
+#include <inttypes.h>
+#endif
 
 struct tea {
     int rounds;

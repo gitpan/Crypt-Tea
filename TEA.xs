@@ -1,5 +1,5 @@
 /*
- * $Id: TEA.xs,v 1.01 2001/03/30 17:24:15 ams Exp $
+ * $Id: TEA.xs,v 1.07 2001/04/19 07:01:32 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
@@ -18,7 +18,7 @@ typedef struct tea * Crypt__TEA;
 MODULE = Crypt::TEA     PACKAGE = Crypt::TEA    PREFIX = tea_
 PROTOTYPES: DISABLE
 
-Crypt__TEA
+Crypt::TEA
 tea_setup(key, rounds)
     char *  key    = NO_INIT
     int     rounds
@@ -35,13 +35,14 @@ tea_setup(key, rounds)
         RETVAL
 
 void
-tea_DESTROY(t)
-    Crypt__TEA t
-    CODE: free(t);
+tea_DESTROY(self)
+    Crypt::TEA self
+    CODE:
+        free(self);
 
 void
-tea_crypt(t, input, output, decrypt)
-    Crypt__TEA t
+tea_crypt(self, input, output, decrypt)
+    Crypt::TEA self
     char *  input  = NO_INIT
     SV *    output
     int     decrypt
@@ -60,7 +61,7 @@ tea_crypt(t, input, output, decrypt)
         if (SvREADONLY(output) || !SvUPGRADE(output, SVt_PV))
             croak("cannot use output as lvalue");
 
-        tea_crypt(t,
+        tea_crypt(self,
                   (unsigned char *)input,
                   (unsigned char *)SvGROW(output, outlen),
                   decrypt);

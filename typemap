@@ -1,15 +1,1 @@
-TYPEMAP
-Crypt__TEA	T_TEAPTR
-
-INPUT
-T_TEAPTR
-    if (sv_derived_from($arg, \"${Package}\")) {
-        IV tmp = SvIV((SV *)SvRV($arg));
-        $var   = ($type) tmp;
-    }
-    else
-        croak(\"$var is not of type ${Package}\");
-
-OUTPUT
-T_TEAPTR
-    sv_setref_pv($arg, \"${Package}\", (void *)$var);
+Crypt::TEA	T_PTROBJ

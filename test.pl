@@ -1,4 +1,7 @@
+use strict;
+
 use Test;
+use vars qw($loaded);
 use Benchmark qw(timediff timestr);
 
 BEGIN { plan tests => 6 }
@@ -9,7 +12,7 @@ my $plaintext = "The quick brown fox jumps over the lazy dog.";
 
 use Crypt::TEA;
 ok($loaded = 1);
-ok($tea = Crypt::TEA->new("abcdefghijklmnop"));
+ok(my $tea = Crypt::TEA->new("abcdefghijklmnop"));
 ok("aaaabbbb", $tea->decrypt($tea->encrypt("aaaabbbb")));
 
 eval 'use Crypt::CBC';
@@ -17,24 +20,6 @@ if ($@) { print "skipping Crypt::CBC test\n"; }
 else {
     print "trying CBC... ";
     my $c = Crypt::CBC->new($key, "TEA") || die "$!\n";
-    my $t = $c->encrypt_hex($plaintext);
-    ok($plaintext, $c->decrypt_hex($t));
-}
-
-eval 'use Crypt::CBC_R';
-if ($@) { print "skipping Crypt::CBC_R test\n"; }
-else {
-    print "trying CBC_R... ";
-    my $c = Crypt::CBC_R->new($key, "TEA") || die "$!\n";
-    my $t = $c->encrypt_hex($plaintext);
-    ok($plaintext, $c->decrypt_hex($t));
-}
-
-eval 'use Crypt::CBC_IL';
-if ($@) { print "skipping Crypt::CBC_IL test\n"; }
-else {
-    print "trying CBC_IL... ";
-    my $c = Crypt::CBC_IL->new($key, "TEA") || die "$!\n";
     my $t = $c->encrypt_hex($plaintext);
     ok($plaintext, $c->decrypt_hex($t));
 }

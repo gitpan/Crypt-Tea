@@ -1,4 +1,4 @@
-# $Id: TEA.pm,v 1.01 2001/03/30 17:24:15 ams Exp $
+# $Id: TEA.pm,v 1.07 2001/04/19 07:01:32 ams Exp $
 # Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
 
 package Crypt::TEA;
@@ -9,12 +9,12 @@ use DynaLoader;
 use vars qw( @ISA $VERSION );
 
 @ISA = qw( DynaLoader );
-($VERSION) = q$Revision: 1.01 $ =~ /(\d+\.\d+)/;
+($VERSION) = q$Revision: 1.07 $ =~ /([\d.]+)/;
 
 bootstrap Crypt::TEA $VERSION;
 
-use constant keysize   => 16;
-use constant blocksize => 8;
+sub keysize   () { 16 }
+sub blocksize () {  8 }
 
 sub new
 {
@@ -114,6 +114,8 @@ Crypt::CBC, Crypt::Blowfish, Crypt::DES
 =item Dave Paris, for taking the time to discuss and review the initial
 version of this module, making several useful suggestions, and
 contributing tests.
+
+=item Mike Blazer and Gil Cohen, for testing under Windows.
 
 =back
 

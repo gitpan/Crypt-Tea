@@ -1,0 +1,8 @@
+1.07    2001-04-19
+
+    * This release should build cleanly under Win32. It still crashes
+      under Activeperl; Any help with this problem would be appreciated.
+
+1.00    2001-03-30
+
+    * First stable release.

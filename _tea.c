@@ -1,21 +1,20 @@
 /*
- * $Id: _tea.c,v 1.01 2001/03/30 17:24:15 ams Exp $
+ * $Id: _tea.c,v 1.07 2001/04/19 07:01:32 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
 #include "tea.h"
 
 /* Endian-independent byte <-> long conversions. */
+#define strtonl(s) (uint32_t)(*(s)|*(s+1)<<8|*(s+2)<<16|*(s+3)<<24)
 
-#define c2l(c, l)  (l  = (uint32_t)*c++,       \
-                    l |= (uint32_t)*c++ <<  8, \
-                    l |= (uint32_t)*c++ << 16, \
-                    l |= (uint32_t)*c++ << 24)
-
-#define l2c(l, c)  (*c++ = (unsigned char)(l      ), \
-                    *c++ = (unsigned char)(l >>  8), \
-                    *c++ = (unsigned char)(l >> 16), \
-                    *c++ = (unsigned char)(l >> 24))
+#define nltostr(l, s) \
+    do {                                    \
+        *(s  )=(unsigned char)((l)      );  \
+        *(s+1)=(unsigned char)((l) >>  8);  \
+        *(s+2)=(unsigned char)((l) >> 16);  \
+        *(s+3)=(unsigned char)((l) >> 24);  \
+    } while (0)
 
 /* TEA is a 64-bit symmetric block cipher with a 128-bit key, developed
    by David J. Wheeler and Roger M. Needham, and described in their
@@ -26,15 +25,15 @@
 
 struct tea *tea_setup(unsigned char *key, int rounds)
 {
-    struct tea *t = calloc(1, sizeof(struct tea));
+    struct tea *t = malloc(sizeof(struct tea));
 
     if (t) {
         t->rounds = rounds;
 
-        c2l(key, t->key[0]);
-        c2l(key, t->key[1]);
-        c2l(key, t->key[2]);
-        c2l(key, t->key[3]);
+        t->key[0] = strtonl(key);
+        t->key[1] = strtonl(key+4);
+        t->key[2] = strtonl(key+8);
+        t->key[3] = strtonl(key+12);
     }
 
     return t;
@@ -51,8 +50,8 @@ void tea_crypt(struct tea *t,
     k = t->key;
     rounds = t->rounds;
 
-    c2l(input, y);
-    c2l(input, z);
+    y = strtonl(input);
+    z = strtonl(input+4);
 
     if (decrypt) {
         sum = delta * rounds;
@@ -69,6 +68,6 @@ void tea_crypt(struct tea *t,
         }
     }
 
-    l2c(y, output);
-    l2c(z, output);
+    nltostr(y, output);
+    nltostr(z, output+4);
 }
