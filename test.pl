@@ -96,11 +96,15 @@ This page is a test of the JavaScript side of
 please use your mouse to cut-and-paste all the bit in
 <CODE>constant-width</CODE> font,
 and paste it into an email to
-<A HREF="http://www.pjb.com.au/comp/contact.html">Peter Billam</A>
+<A HREF="http://www.pjb.com.au/comp/contact.html">Peter&nbsp;Billam</A>
 </P>
 <PRE>
 <SCRIPT LANGUAGE="JavaScript"> <!--
-document.write('Crypt::Tea 2.00 on ' + navigator.appName
+EOT
+print F <<EOT;
+document.write('Crypt::Tea ${Crypt::Tea::VERSION} on ' + navigator.appName
+EOT
+print F <<'EOT';
  + ' ' + navigator.appVersion);
 // -->
 </SCRIPT>
