@@ -601,7 +601,6 @@ for (b in a2b) { b2a[a2b[b]] = b; }
 </SCRIPT>
 EOT
 
-# POD Documentation (perldoc or pod2html this file)
 =head1 NAME
 
 Tea.pm - Perl module to implement TEA, the Tiny Encryption Algorithm
@@ -609,24 +608,26 @@ Tea.pm - Perl module to implement TEA, the Tiny Encryption Algorithm
 =head1 SYNOPSIS
 
 Usage:
-   use Tea;
-   $key = 'PUFgob$*LKDF D)(F IDD&P?/';
-   $ascii_ciphertext = &encrypt ($plaintext, $key);
-   ...
-   $plaintext_again = &decrypt ($ascii_ciphertext, $key);
-   ...
-   $signature = &asciidigest ($text);
+
+	use Tea;
+	$key = 'PUFgob$*LKDF D)(F IDD&P?/';
+	$ascii_ciphertext = &encrypt ($plaintext, $key);
+	...
+	$plaintext_again = &decrypt ($ascii_ciphertext, $key);
+	...
+	$signature = &asciidigest ($text);
 
 In CGI scripts:
-   use Crypt::Tea;
-   print &tea_in_javascript;  # now the browser can encrypt & decrypt !
-   $key = &get_password_from_some_database;
-   ...   # get JavaScript to ask the user for a password
-   &encrypt_and_write ($lots_of_html, $key, $windowname);
+
+	use Crypt::Tea;
+	print &tea_in_javascript;  # now the browser can encrypt & decrypt !
+	$key = &get_password_from_some_database;
+	...   # get JavaScript to ask the user for a password
+	&encrypt_and_write ($lots_of_html, $key, $windowname);
 
 	# and then to get FORM data back...
-   print '<FORM onSubmit="opener.encrypt_and_submit(this, opener.key)">';
-   print '<INPUT TYPE="hidden" NAME="htauth_t">';
+	print '<FORM onSubmit="opener.encrypt_and_submit(this, opener.key)">';
+	print '<INPUT TYPE="hidden" NAME="htauth_t">';
 	# and
 	%htauth_t = split("\0", decrypt($DAT{htauth_t}, $key));
 	# These manoeuvres are utilised by CGI::Htauth.pm q.v.

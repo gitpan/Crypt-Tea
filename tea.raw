@@ -47,3 +47,49 @@ if ($encrypt) {
 	print &decrypt ($text, $key);
 }
 exit 0;
+
+__END__
+
+=head1 NAME
+
+tea - Perl script to give command-line access to Crypt::Tea.pm
+
+=head1 SYNOPSIS
+
+  tea -c filename   # encrypts filename
+  tea filename      # decrypts filename
+  tea -s filename   # calculates ascii digital signature for filename
+  tea -j            # outputs JavaScript doing compatible encryption
+  tea -h            # prints this message
+
+For encryption and decryption, you will be asked for a password.
+It should be a sufficiently longish string; say 17 random 8-bit bytes.
+
+=head1 DESCRIPTION
+
+This script uses the Crypt::Tea.pm module to offer TEA, the Tiny
+Encryption Algorithm, and some Modes of Use based on CBC, compatibly in
+both Perl and JavaScript.
+
+The various options offer encryption, decryption and digest, and all
+cyphertext is ascii-encoded to prevent munging. Another option returns
+JavaScript code which offers identical functions in JS, and this can
+be used by GCIs to feed to the browser.  Triple encryption will be
+offered later.
+
+Version #VERSION#
+
+=head1 AUTHOR
+
+Peter J Billam <computing@pjb.com.au>
+
+=head1 CREDITS
+
+Based on Crypt::Tea.pm
+
+=head1 SEE ALSO
+
+http://www.pjb.com.au/, http://www.cpan.org, perl(1).
+
+=cut
+
