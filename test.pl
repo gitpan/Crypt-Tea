@@ -6,7 +6,7 @@
 #     This program is free software; you can redistribute it and/or     #
 #            modify it under the same terms as Perl itself.             #
 #########################################################################
-require './Tea.pm';  import Crypt::Tea;
+use Crypt::Tea;
 
 my $text = <<'EOT';
 Hier lieg' ich auf dem Frülingshügel:
@@ -78,9 +78,8 @@ $c2 = &encrypt ($p2, $key1);
 print F "<HTML><HEAD><TITLE>test.html</TITLE>\n", &tea_in_javascript(), <<EOT;
 </HEAD><BODY><HR>
 <SCRIPT LANGUAGE="JavaScript"> <!--
-document.write(decrypt('$c1','$key1'));
+document.write('<P><CODE>' + decrypt('$c1','$key1') + '</CODE></P>\\n');
 var c2 = encrypt(decrypt('$c2','$key1'),'$key2');
-document.write('<P><CODE>' + c2 + '</CODE></P>\\n');
 document.write('<P><CODE>' + decrypt(c2,'$key2') + '</CODE></P>\\n');
 // -->
 </SCRIPT>
@@ -88,13 +87,14 @@ document.write('<P><CODE>' + decrypt(c2,'$key2') + '</CODE></P>\\n');
 EOT
 close F;
 
-warn "Now use a JavaScript-capable browser to view test.html . . .\n";
+warn "Now use a JavaScript-capable browser to view test.html ...\n";
 
 exit 0;
 
 __END__
 
 =pod
+
 =head1 NAME
 
 test - Perl script to test Crypt::Tea.pm
@@ -106,7 +106,7 @@ test - Perl script to test Crypt::Tea.pm
 
 =head1 DESCRIPTION
 
-This tests the Crypt::Tea.pm module, version #VERSION#
+This tests the Crypt::Tea.pm module.
 
 =head1 AUTHOR
 

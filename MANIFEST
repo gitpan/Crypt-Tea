@@ -1,10 +1,10 @@
+README
+MANIFEST
 Changes
+Install
 Clui
 Makefile.PL
-MANIFEST
-README
+test.pl
 Tea.pm
-c_tea.c
-tea
-test_script
-test.html
+bin/tea
+algorithm/c_tea.c

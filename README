@@ -1,3 +1,6 @@
+
+                       Crypt::Tea.pm
+
 This module implements TEA, the Tiny Encryption Algorithm, and some
 Modes of Use based on CBC, compatibly in both Perl and JavaScript.
 This enables CGI scripts to communicate with browsers.
@@ -9,15 +12,16 @@ GCIs to feed to the browser. A wrapper executable 'tea' is included for
 command-line use. Triple encryption will be offered later. Tea.pm is
 used by the CGI::Htauth.pm authentication and encryption module ...
 
-To install Crypt::Tea.pm in the @INC path, and tea in the $PATH path:
+To install ( cool ! new ! interactive ! ) just:
+   perl Install
+
+that's all ! or you can still do it the old way ...
 	perl Makefile.PL
 	make
+	make test
 	make install
 
 For up-to-date source, see http://www.cpan.org/SITES.html
-
-Version history
-1.32: 20020309 Two bugs fixed in JS encryption; Htauth hooks working
 
 There is a similarly-named module Crypt::TEA.pm by Abhijit Menon-Sen.
 The functionality of this Tea.pm is quite different from Abhijit's

@@ -1,4 +1,4 @@
-#! #PERLBIN#
+#!perl
 #########################################################################
 #        This Perl script is Copyright (c) 2000, Peter J Billam         #
 #               c/o P J B Computing, www.pjb.com.au                     #
@@ -22,7 +22,8 @@ usage:
 
 For encryption and decryption, you will be asked for a password.
 It should be a sufficiently longish string; say 17 random 8-bit bytes.
-Version #VERSION#
+Version 1.40,
+#COMMENT#
 
 EOT
 	}
@@ -79,7 +80,8 @@ JavaScript code which offers identical functions in JS, and this can
 be used by GCIs to feed to the browser.  Triple encryption will be
 offered later.
 
-Version #VERSION#
+Version 1.40,
+#COMMENT#
 
 =head1 AUTHOR
 

@@ -6,9 +6,10 @@
 #     This module is free software; you can redistribute it and/or      #
 #            modify it under the same terms as Perl itself.             #
 #########################################################################
+# made 20020601 by root in /home/cpan/Term-Clui-1.14
 
 package Term::Clui;
-$VERSION = '1.13';
+$VERSION = '1.14';
 require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(ask_password ask confirm choose edit sorry view);
@@ -335,7 +336,7 @@ sub choose {  local ($question, @list) = @_;
 			&wr_screen();
 		} elsif ($c eq "\r") {
 			&erase_lines(1);
-			&goto((length $firstline)+2,0); &puts($list[$this_cell]."\n\r");
+			&goto((length $firstline)+1,0); &puts($list[$this_cell]."\n\r");
 			&endwin();
 			if ($firstline && dbmopen (%CHOICES, "$home/db/choices", 0600)) {
 				$CHOICES{$firstline} = $list[$this_cell];
@@ -598,7 +599,7 @@ sub tiview {	local ($title, $text) = @_;
 	
 	&check_size;
 	local @rows = &fmt($text, nofill=>1);
-	&initscr ();
+	&initscr();
 	if ($titlelength > ($maxcols-35)) { &puts ("$title\r\n");
 	} else { &puts ("$title   (<enter> to continue, q to clear)\r\n");
 	}
@@ -740,8 +741,10 @@ It doesn't use I<curses> (which is a whole-of-screen interface);
 it uses a small subset of vt100 sequences (up down left right normal
 and reverse) which are very portable.
 
-This is Term::Clui.pm version 1.13,
-made 20020325 by root in /home/cpan/Term-Clui-1.13.
+There is an associated file selector, Term::Clui::FileSelect
+
+This is Term::Clui.pm version 1.14,
+made 20020601 by root in /home/cpan/Term-Clui-1.14.
 
 =head1 WINDOW-SIZE
 
@@ -760,11 +763,9 @@ and successive blank lines are collapsed into one.
 If the question will not fit within the available rows, it is truncated.
 
 If the available choice items in a I<&choose> overflow the screen,
-then currently I<complete.pl> is invoked.  This is fine if the user knows
-the item they want by its first letters, but it's not good otherwise.
-It will be replaced by asking the user to enter 'clue' letters,
+the user is asked to enter 'clue' letters,
 and as soon as the items matching them will fit onto the screen
-they will be displayed as a choice.
+they are displayed as a choice.
 
 =head1 SUBROUTINES
 
@@ -863,6 +864,7 @@ which were in turn based on some even older curses-based programs in I<C>.
 
 =head1 SEE ALSO
 
+Term::Clui::FileSelect ,
 http://www.pjb.com.au/ , perl(1), http://www.cpan.org/SITES.html
 
 =cut

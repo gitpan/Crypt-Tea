@@ -22,10 +22,9 @@
 # The $key is a sufficiently longish string; at least 17 random 8-bit bytes
 #
 # Written by Peter J Billam, http://www.pjb.com.au
-# #COMMENT#
 
 package Crypt::Tea;
-$VERSION = '#VERSION#';
+$VERSION = '1.40';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -579,7 +578,7 @@ EOT
 
 =head1 NAME
 
-Tea.pm - Perl module to implement TEA, the Tiny Encryption Algorithm
+Tea.pm - The Tiny Encryption Algorithm in Perl and JavaScript
 
 =head1 SYNOPSIS
 
@@ -610,7 +609,7 @@ bytes for single encryption.
 As of version 1.34, various Htauth-specific hook routines
 have now been moved out into the I<CGI::Htauth.pm> module.
 
-Version #VERSION#,
+Version 1.40,
 #COMMENT#
 
 (c) Peter J Billam 1998
