@@ -1,13 +1,11 @@
 /*
- * $Id: _tea.c,v 1.22 2001/05/07 07:07:38 ams Exp $
+ * $Id: _tea.c,v 1.25 2001/05/21 17:32:59 ams Exp $
  * Copyright 2001 Abhijit Menon-Sen <ams@wiw.org>
  */
 
 #include "tea.h"
 
-/* Endian-independent byte <-> long conversions. */
 #define strtonl(s) (uint32_t)(*(s)|*(s+1)<<8|*(s+2)<<16|*(s+3)<<24)
-
 #define nltostr(l, s) \
     do {                                    \
         *(s  )=(unsigned char)((l)      );  \

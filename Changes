@@ -1,3 +1,7 @@
+1.25    2001-05-21
+
+    * More Makefile.PL feature-probing updates.
+
 1.22    2001-05-07
 
     * Makefile.PL now tries to do the right thing on systems which don't
