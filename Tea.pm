@@ -596,8 +596,8 @@ Usage:
 In CGI scripts:
 
 	use Crypt::Tea;
-	print &tea_in_javascript;  # now the browser can encrypt & decrypt !
-	# see CGI::Htauth.pm for examples ...
+	print &tea_in_javascript;  # now the browser can encrypt
+	# and decrypt ! see CGI::Htauth.pm for examples ...
 
 =head1 DESCRIPTION
 
@@ -607,12 +607,13 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-Version: #VERSION#
-Various Htauth-specific hook routines have now been moved out into
-the I<CGI::Htauth.pm> module.
+As of version 1.34, various Htauth-specific hook routines
+have now been moved out into the I<CGI::Htauth.pm> module.
+
+Version #VERSION#,
 #COMMENT#
 
-(c) Peter J Billam 1998, covered by the GPL Gnu Public Licence
+(c) Peter J Billam 1998
 
 =head1 SUBROUTINES
 

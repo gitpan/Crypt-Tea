@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-require './Clui.pm'; import Term::Clui;
+require './Clui'; import Term::Clui;
 
 &check_kit;
 
@@ -15,7 +15,7 @@ Use the arrow keys (or h,j,k,l) and <Return> to make your choices.
 
 EOT
 
-my $version = '1.34';
+my $version = '1.35';
 my $bindir  = &bindir;
 my $libdir  = &libdir . '/Crypt';
 my $mandir  = &mandir;
@@ -32,7 +32,7 @@ if ($mandir)  { print F "MANDIR = $mandir\n"; }
 
 print F <<'EOT';
 
-local : Tea.pm tea
+local : Tea.local tea.local
 
 EOT
 if ($bindir && $mandir) { print F <<'EOT';
@@ -52,20 +52,20 @@ EOT
 
 print F <<'EOT';
 
-Tea.pm : localise Tea.raw
-	./localise Tea.raw > $@
+Tea.local : localise Tea.pm
+	./localise Tea.pm > $@
 
-${LIBDIR}/Tea.pm : Tea.pm
-	perl -c Tea.pm
+${LIBDIR}/Tea.pm : Tea.local
+	perl -c Tea.local
 	test -d ${LIBDIR} || mkdir ${LIBDIR}
 	chmod 755 ${LIBDIR}
-	cp Tea.pm $@
+	cp Tea.local $@
 	chmod 644 $@
 
 EOT
 if ($bindir) { print F <<'EOT'; }
-tea : localise tea.raw
-	./localise tea.raw > $@
+tea.local : localise tea
+	./localise tea > $@
 
 ${BINDIR}/tea : tea
 	perl -c tea
@@ -75,8 +75,8 @@ ${BINDIR}/tea : tea
 EOT
 
 if ($mandir) { print F <<'EOT'; }
-${MANDIR}/man3/Crypt_Tea.3 : Tea.pm
-	pod2man Tea.pm > $@
+${MANDIR}/man3/Crypt_Tea.3 : Tea.local
+	pod2man Tea.local > $@
 	chmod 644 $@
 	cp $@ ${MANDIR}/man3/Crypt::Tea.3
 	chmod 644 ${MANDIR}/man3/Crypt::Tea.3
@@ -239,12 +239,15 @@ sub check_kit {
 	print STDERR "Checking your kit ... ";
 
 	my %file_sizes = (
-		'MANIFEST', 80,
-		'Makefile.PL', 7539,
-		'Tea.raw', 25641,
-		'tea.raw', 2997,
-		'Clui.pm', 29518,
+		'README', 1612,
+		'Changes', 363,
+		'MANIFEST', 82,
+		'Makefile.PL', 7609,
+		'Tea.pm', 25625,
+		'tea', 2997,
+		'Clui', 29518,
 		'test_script', 3417,
+		'test.html', 17781,
 	);
 
 	my $problem_found = 0;

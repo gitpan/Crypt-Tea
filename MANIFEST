@@ -1,9 +1,10 @@
 Changes
-Clui.pm
+Clui
 Makefile.PL
 MANIFEST
 README
-Tea.raw
+Tea.pm
 c_tea.c
-tea.raw
+tea
 test_script
+test.html
