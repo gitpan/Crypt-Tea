@@ -19,3 +19,4 @@
 20040930 2.01 test.html ascii2bytes should return 216 not 217
 20041005 2.02 test.pl displays correct version
 20041011 2.03 JS tea_code and tea_decode now work on Konqueror5.0
+20041127 2.04 consistentised Term::Clui in Install

@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.03';
+$VERSION = '2.04';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -609,7 +609,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string; at least 17 random 8-bit
 bytes for single encryption.
 
-Version 2.03,
+Version 2.04,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -692,8 +692,6 @@ they can then use I<parent.key> to encrypt and decrypt.
 See CGI::Htauth.pm for attempts to use this kind of technique.
 
 =head1 ROADMAP
-
-This is version 2.03.
 
 Version 1.45 will probably remain the final version in the 1.xx branch;
 it is stable, and fully compatible with earlier versions.
