@@ -259,10 +259,19 @@ function respond_and_login(form) {
  remember_htauth_p   = form.htauth_p.value;  // global
  htauth_frame0.document.htauth_form0.htauth_r.value =
   asciidigest(form.htauth_c.value + remember_htauth_p);
+ var returnstr = '<BODY';
  var bg = htauth_frame1.document.bgColor;
+ if (bg) {
+  htauth_frame0.document.htauth_form0.htauth_bg.value = bg;
+  returnstr += ' BGCOLOR="' + bg + '"';
+ }
+ var fg = htauth_frame1.document.fgColor;
+ if (fg) {
+  htauth_frame0.document.htauth_form0.htauth_fg.value = fg;
+  returnstr += ' TEXT="' + fg + '"';
+ }
  htauth_frame0.document.htauth_form0.submit();
- return '<BODY BGCOLOR="' + bg +
-  '"><CENTER>One moment please . . .</CENTER></BODY>';
+ return returnstr + '><CENTER>One moment please . . .</CENTER></BODY>';
 }
 
 function encrypt_and_submit(form) { // nb: javascript: url passes the frame
@@ -276,10 +285,19 @@ function encrypt_and_submit(form) { // nb: javascript: url passes the frame
  htauth_frame0.document.htauth_form0.htauth_r.value = '';
  htauth_frame0.document.htauth_form0.htauth_t.value =
   encrypt(plaintext, remember_htauth_p);
- htauth_frame0.document.htauth_form0.submit();
+ var returnstr = '<BODY';
  var bg = htauth_frame1.document.bgColor;
- return '<BODY BGCOLOR="' + bg +
-  '"><CENTER>One moment please . . .</CENTER></BODY>';
+ if (bg) {
+  htauth_frame0.document.htauth_form0.htauth_bg.value = bg;
+  returnstr += ' BGCOLOR="' + bg + '"';
+ }
+ var fg = htauth_frame1.document.fgColor;
+ if (fg) {
+  htauth_frame0.document.htauth_form0.htauth_fg.value = fg;
+  returnstr += ' TEXT="' + fg + '"';
+ }
+ htauth_frame0.document.htauth_form0.submit();
+ return returnstr + '><CENTER>One moment please . . .</CENTER></BODY>';
 }
 
 // -- conversion routines between string, bytes, ascii encoding, & blocks --
@@ -614,6 +632,8 @@ for (b in a2b) { b2a[a2b[b]] = ''+b; }
 // -->
 </SCRIPT>
 EOT
+
+=pod
 
 =head1 NAME
 

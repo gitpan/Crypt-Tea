@@ -15,7 +15,7 @@ Use the arrow keys (or h,j,k,l) and <Return> to make your choices.
 
 EOT
 
-my $version = '1.32';
+my $version = '1.33';
 my $bindir  = &bindir;
 my $libdir  = &libdir . '/Crypt';
 my $mandir  = &mandir;
@@ -237,11 +237,12 @@ sub check_kit {
 	print STDERR "Checking your kit ... ";
 
 	my %file_sizes = (
-		'Makefile.PL', 7447,
-		'Tea.raw', 27558,
-		'tea.raw', 2991,
+		'MANIFEST', 72,
+		'Makefile.PL', 7465,
+		'Tea.raw', 28118,
+		'tea.raw', 2997,
 		'Clui.pm', 25574,
-		'test_script', 3464,
+		'test_script', 3417,
 	);
 
 	my $problem_found = 0;

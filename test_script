@@ -94,7 +94,7 @@ exit 0;
 
 __END__
 
-# POD Documentation (perldoc or pod2html this file)
+=pod
 =head1 NAME
 
 test - Perl script to test Crypt::Tea.pm

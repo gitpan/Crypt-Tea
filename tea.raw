@@ -50,6 +50,8 @@ exit 0;
 
 __END__
 
+=pod
+
 =head1 NAME
 
 tea - Perl script to give command-line access to Crypt::Tea.pm
