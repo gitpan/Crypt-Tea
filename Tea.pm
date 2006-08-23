@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.09';
+$VERSION = '2.10';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -107,7 +107,7 @@ sub ascii2str {   my $a = $_[$[]; # converts pseudo-base64 to string of bytes
 		$ia++; last if ($ia>=$la);
 		$b[$ib] |= $a2b{substr $a, $ia+$[, 1}; $ib++;
 	}
-	return pack 'c*', @b;
+	return pack 'C*', @b;
 }
 sub str2ascii {   my $b = $_[$[]; # converts string of bytes to pseudo-base64
 	my $ib = $[;  my $lb = length $b;  my @s = ();
@@ -615,7 +615,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string;
 at least 17 random 8-bit bytes for single encryption.
 
-Version 2.09,
+Version 2.10,
 #COMMENT#
 
 (c) Peter J Billam 1998
@@ -797,7 +797,7 @@ ascii-encoded, and notably there is a subroutine to return JavaScript
 code which implements compatible functions. Unfortunately, Microsoft
 operating systems confuse the two names and are unable to install both.
 
-This version (2.09) is mature, and apart perhaps from minor bug
+This version (2.10) is mature, and apart perhaps from minor bug
 fixes it will probably be the final version of Crypt::Tea. Further
 development will take place probably under the name Crypt::Tea_JS.
 
