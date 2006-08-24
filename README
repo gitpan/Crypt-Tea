@@ -23,7 +23,7 @@ For up-to-date source, see http://www.cpan.org/SITES.html
 and look for the directory authors/id/P/PJ/PJB
 See also http://www.pjb.com.au/comp/tea.html
 
-This is version 2.09.  It is mature, and apart perhaps from minor bug
+This is version 2.11.  It is mature, and apart perhaps from minor bug
 fixes it will probably be the final version of Crypt::Tea.  Future
 developments will take place under the name Crypt::Tea_JS, which will
 use some C for extra speed, and the new version of the TEA algorithm.

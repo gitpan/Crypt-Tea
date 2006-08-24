@@ -26,3 +26,6 @@
 20050105 EXPORT_OK and ALL introduced for str2ascii and ascii2str
 20050113 2.08 test.pl uses Test::Simple
 20050114 2.09 algorithm cut out of MANIFEST, sub ascii2str gets no warnings
+20060823 2.10 pack 'c*' changed to pack 'C*'
+20060824 2.11 correct Install for Clui size test
+
