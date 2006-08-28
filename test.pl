@@ -9,6 +9,7 @@
 
 use Test::Simple tests => 7;
 use Crypt::Tea;
+use integer;
 # $Crypt::Tea::PP = 1;
 
 my $text = <<'EOT';
@@ -48,12 +49,12 @@ ok (&equal(\@ary,
  [423887967, 1601117047, 751062895, 3646648452]), "ascii2binary");
 
 @ary = &Crypt::Tea::tea_code((2048299521,595110280),
-  (-764348263,554905533,637549562,-283747546));
-ok (&equal(\@ary, [-451692928, 1589210186]), "tea_code");
+  (032234174231,554905533,637549562,035705455446));
+ok (&equal(\@ary, [034504733200, 1589210186]), "tea_code");
 
 @ary = &Crypt::Tea::tea_decode((2048299521,595110280),
-  (-764348263,554905533,637549562,-283747546));
-ok (&equal(\@ary, [-257148566, -1681954940]), "tea_decode");
+  (032234174231,554905533,637549562,035705455446));
+ok (&equal(\@ary, [036053034552, 023357663604]), "tea_decode");
 
 ok (&asciidigest('Gloop gleep glorp glurp') eq "j4u8AWK2n6A4abYVtUAihw",
 "asciidigest");

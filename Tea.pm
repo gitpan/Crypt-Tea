@@ -24,7 +24,7 @@
 # Written by Peter J Billam, http://www.pjb.com.au
 
 package Crypt::Tea;
-$VERSION = '2.11';
+$VERSION = '2.12';
 
 # Don't like depending on externals; this is strong encrytion ... but ...
 use Exporter; @ISA = qw(Exporter);
@@ -211,7 +211,9 @@ sub tea_code  { my ($v0,$v1, $k0,$k1,$k2,$k3) = @_;
 	while ($n-- > 0) {
 		$sum += 0x9e3779b9;   # TEA magic number delta
 		$v0 += (($v1<<4)+$k0) ^ ($v1+$sum) ^ ((0x07FFFFFF & ($v1>>5))+$k1) ;
+		$v0 &= 0xFFFFFFFF;
 		$v1 += (($v0<<4)+$k2) ^ ($v0+$sum) ^ ((0x07FFFFFF & ($v0>>5))+$k3) ;
+		$v1 &= 0xFFFFFFFF;
 	}
 	return ($v0, $v1);
 }
@@ -222,7 +224,9 @@ sub tea_decode  { my ($v0,$v1, $k0,$k1,$k2,$k3) = @_;
 	$sum = 0x9e3779b9 << 5 ;   # TEA magic number delta
 	while ($n-- > 0) {
 		$v1 -= (($v0<<4)+$k2) ^ ($v0+$sum) ^ ((0x07FFFFFF & ($v0>>5))+$k3) ;
+		$v1 &= 0xFFFFFFFF;
 		$v0 -= (($v1<<4)+$k0) ^ ($v1+$sum) ^ ((0x07FFFFFF & ($v1>>5))+$k1) ;
+		$v0 &= 0xFFFFFFFF;
 		$sum -= 0x9e3779b9 ;
 	}
 	return ($v0, $v1);
@@ -615,7 +619,7 @@ and some Modes of Use, in Perl and JavaScript.
 The $key is a sufficiently longish string;
 at least 17 random 8-bit bytes for single encryption.
 
-Version 2.11,
+Version 2.12,
 #COMMENT#
 
 (c) Peter J Billam 1998

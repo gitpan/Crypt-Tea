@@ -28,4 +28,4 @@
 20050114 2.09 algorithm cut out of MANIFEST, sub ascii2str gets no warnings
 20060823 2.10 pack 'c*' changed to pack 'C*'
 20060824 2.11 correct Install for Clui size test
-
+20060828 2.12 64-bit bug fixed in sub tea_code, sub tea_decode, test.pl
